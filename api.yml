@@ -39,6 +39,7 @@ endpoints:
     methods:
       get:
         -
+          description:
           headers:
             accept: application/json
           expect:
@@ -132,16 +133,16 @@ endpoints:
         -
           description: Create session sucesfully when login/pwd known. Returns token
           headers:
-            Content-Type: application/json
+            content-type: application/json
           expect:
             code: 201
             headers:
-              Content-Type:application/json
+              content-type:application/json
             body: "{token: 'some real token'}"
         -
           description: Return Forbidden when login/pwd unknown
           headers:
-            Content-Type: application/json
+            content-type: application/json
           expect:
             code: 403
       delete:
