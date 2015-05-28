@@ -101,7 +101,7 @@ memory: "",
 Сервис написан на языке программировани golang ver >= 1.3
 Использует базу данных mongodb для сохранения результатов.
 Использован веб фреймворк https://github.com/zenazn/goji
-
+Драйвер для mongodb http://godoc.org/labix.org/v2/mgo
 
 ## Инсталляция и деплой
 

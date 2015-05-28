@@ -1,6 +1,6 @@
 # Here we will access
 base_url: http://localhost
-port: 4567
+port: 4700
 version_api: v1
 
 title: Wholesale Customer Orders API
@@ -21,10 +21,11 @@ require:
 # call any ruby methods, say: Namespace::DB.clean() or smth
 # also you could run any shell commands: 'my_script.sh -v clear_db'
 run:
-  before_all:
-  after_all:
+  before_all: \mongo localhost:27017/wsapi_test spec/fixtures/create_user.js 2>&1 >/dev/null
+  after_all: \mongo localhost:27017/wsapi_test --eval "db.customers.drop();" 2>&1 >/dev/null
   before_each:
   after_each:
+  on_error: exit # exit, alert, skip
 headers:
   # exclude headers from resulting documentation
   exclude:
@@ -129,9 +130,20 @@ endpoints:
     methods:
       post:
         -
+          description: Create session sucesfully when login/pwd known. Returns token
           headers:
+            Content-Type: application/json
           expect:
-            code: 406
+            code: 201
+            headers:
+              Content-Type:application/json
+            body: "{token: 'some real token'}"
+        -
+          description: Return Forbidden when login/pwd unknown
+          headers:
+            Content-Type: application/json
+          expect:
+            code: 403
       delete:
         -
           headers:
