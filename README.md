@@ -7,20 +7,69 @@
 
 base_url=http://apiwholesale.alibaba24.ru
 
-CustomerAPI
+CustomerAPI точки входа (endpoints)
 
-base_url + "/v1/login"
-base_url + "/v1/order"
+    base_url + "/v1/session"
+    base_url + "/v1/order"
 
-LIST /v1/orders
-GET /v1/order/:id
-CREATE POST /v1/order
+Операции:
+
+Create session POST /v1/session
+Delete session DELETE /v1/session
+
+    LIST /v1/orders
+    GET /v1/order/:id
+    CREATE POST /v1/order
+
+## SIGNIN
+Создает сессию, при успехе возвращает временный ключ
+Успех означает то, что данный пользователь известен системе и ему разрешен вход.
+
+Временный ключ используется при дальнейшей работе с API,
+каждый запрос подписывается этим ключем
+
+
+Headers:
+   Conetent-Type: application/json
+
+POST /v1/session
+{
+login: email,
+password: password
+}
+
+-->
+Headers:
+{
+Content-Type: application/json
+X-Token-TTL: 3600 (1 hour)
+}
+
+Body:
+{
+token: "...long..token string..."
+}
 
 
 
+## Orders
 
+Headers
 
+Accept: application/json
+GET /v1/orders
+возвращает список моих заказов и товаров в этом заказе
 
+POST /v1/orders
+
+[
+{
+.. order object ..
+},
+{
+.. order object ..
+}
+]
 
 
 
