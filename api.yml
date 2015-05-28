@@ -37,20 +37,113 @@ endpoints:
     params: Not expecting any parameters
     methods:
       get:
-        # array of request examples
         -
           headers:
             accept: application/json
-          params:
-            one: 22
-            duo: Expecting the World!
-            trua: 20-03-2016
           expect:
             code: 200
             content-type: application/json;charset=utf-8
         -
           headers:
-            accept: text/plain
           expect:
-            code: 200
-            content-type: text/plain
+            code: 406
+      post:
+        -
+          headers:
+          expect:
+            code: 406
+      delete:
+        -
+          headers:
+          expect:
+            code: 406
+      options:
+        -
+          headers:
+          expect:
+            code: 406
+      head:
+        -
+          headers:
+          expect:
+            code: 406
+
+  order:
+    description: Operations with given order
+    params: Doesn`t expect any params
+    methods:
+      get:
+        -
+          headers:
+          expect:
+            code: 406
+      put:
+        -
+          headers:
+          expect:
+            code: 406
+      delete:
+        -
+          headers:
+          expect:
+            code: 406
+      options:
+        -
+          headers:
+          expect:
+            code: 406
+      head:
+        -
+          headers:
+          expect:
+            code: 406
+
+  orders:
+    description: Operations with list of orders
+    params: Doesn`t expect any params
+    methods:
+      get:
+        -
+          headers:
+          expect:
+            code: 406
+      post:
+        -
+          headers:
+          expect:
+            code: 406
+      options:
+        -
+          headers:
+          expect:
+            code: 406
+      head:
+        -
+          headers:
+          expect:
+            code: 406
+
+  session:
+    description: Create session
+    params: Doesn`t expect any params
+    methods:
+      post:
+        -
+          headers:
+          expect:
+            code: 406
+      delete:
+        -
+          headers:
+          expect:
+            code: 406
+      options:
+        -
+          headers:
+          expect:
+            code: 406
+      head:
+        -
+          headers:
+          expect:
+            code: 406
