@@ -11,6 +11,8 @@ CustomerAPI точки входа (endpoints)
 
     base_url + "/v1/session"
     base_url + "/v1/order"
+    base_url + "/v1/orders"
+    base_url + "/v1/ping"
 
 Операции:
 
@@ -21,7 +23,7 @@ Delete session DELETE /v1/session
     GET /v1/order/:id
     CREATE POST /v1/order
 
-## SIGNIN
+### SIGNIN
 Создает сессию, при успехе возвращает временный ключ
 Успех означает то, что данный пользователь известен системе и ему разрешен вход.
 
@@ -52,15 +54,13 @@ token: "...long..token string..."
 
 
 
-## Orders
+### Orders
 
 Headers
 
 Accept: application/json
 GET /v1/orders
 возвращает список моих заказов и товаров в этом заказе
-
-POST /v1/orders
 
 [
 {
@@ -71,11 +71,37 @@ POST /v1/orders
 }
 ]
 
+Headers
+Content-Type: application/json
+
+POST /v1/orders
+Создает новую запись в таблице заказов, перед сохранением валидирует структуру входных данных.
+Body
+{
+ .. object to save ..
+}
+
+### Ping endpoint
+
+Accept: application/json
+GET /v1/ping
+
+Предназначен для контроля и мониторинга работы сервиса, получения статистической
+информации по состоянии, запросам и ошибкам.
+
+{
+status: "OK",
+memory: "",
+....
+}
 
 
 ## Быстрый старт работы над этим проектом
 
-Вкратце описать шаги или примеры команд для запуска
+Сервис написан на языке программировани golang ver >= 1.3
+Использует базу данных mongodb для сохранения результатов.
+Использован веб фреймворк https://github.com/zenazn/goji
+
 
 ## Инсталляция и деплой
 

@@ -1,0 +1,56 @@
+# Here we will access
+base_url: http://localhost
+port: 4567
+version_api: v1
+
+title: Wholesale Customer Orders API
+subtitle: API для доступа браузерных плагинов оптовых покупателей
+description: "Оптовые клиенты alibaba24.ru могут установить себе браузерный плагин,
+который позволяет откладывать нужные товары в корзину на alibaba24.ru путем внедрения
+дополнительных кнопок и элементов на страницы товаров taobao.com.
+API является веб-сервисом, который позволяет аутентифицировать клиента и сохранять заказы в базе данных"
+footer: (c) Yury Batenko for alibaba24.ru 2015
+original:
+  # what will be printed into  formatted output, your "real" API URL
+  base_url: http://apiwholesale.alibaba24.ru
+  port:
+
+# require arbitrary ruby file before starting tests
+require:
+# in case if you has preloaded ruby file, here you can
+# call any ruby methods, say: Namespace::DB.clean() or smth
+# also you could run any shell commands: 'my_script.sh -v clear_db'
+run:
+  before_all:
+  after_all:
+  before_each:
+  after_each:
+headers:
+  # exclude headers from resulting documentation
+  exclude:
+
+# where you define API endpoints
+endpoints:
+  # /{version_api}/ping
+  ping:
+    description: Base point for requesting stats
+    params: Not expecting any parameters
+    methods:
+      get:
+        # array of request examples
+        -
+          headers:
+            accept: application/json
+          params:
+            one: 22
+            duo: Expecting the World!
+            trua: 20-03-2016
+          expect:
+            code: 200
+            content-type: application/json;charset=utf-8
+        -
+          headers:
+            accept: text/plain
+          expect:
+            code: 200
+            content-type: text/plain
