@@ -2,3 +2,4 @@ doc/
 tmp/
 release/
 Guardfile
+api_ws_customers
