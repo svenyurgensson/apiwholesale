@@ -39,7 +39,7 @@ endpoints:
     methods:
       get:
         -
-          description:
+          description: Simple endpoint
           headers:
             accept: application/json
           expect:
