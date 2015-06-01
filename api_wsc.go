@@ -1,25 +1,28 @@
 package main
 
 import (
-    "fmt"
-    "os"
-    "time"
+	"fmt"
+	"os"
+	"time"
 
-    "./system"
-    "./routes"
+	"./system"
+	"./routes"
 
-    "github.com/zenazn/goji"
+	"github.com/zenazn/goji"
 )
 
 
 func main() {
-    system.Boot_time = fmt.Sprintf(time.Now().Format(time.RFC3339))
-    system.Hostname, _  = os.Hostname()
+	system.Boot_time = fmt.Sprintf(time.Now().Format(time.RFC3339))
+	system.Hostname, _  = os.Hostname()
 
-    // Add routes
-    routes.Include()
+	system.Init()
+	defer system.DBSession.Close()
 
-    goji.Serve()
+	// Add routes
+	routes.Include()
+
+	goji.Serve()
 }
 
 

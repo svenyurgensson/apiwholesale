@@ -1,0 +1,20 @@
+production:
+  db:
+    name: apiwholesale_prod
+    hosts:
+      - localhost:27017
+    options:
+
+development:
+  db:
+    name: apiwholesale_dev
+    hosts:
+      - localhost:27017
+    options:
+
+test:
+  db:
+    name: apiwholesale_test
+    hosts:
+      - localhost:27017
+    options:
