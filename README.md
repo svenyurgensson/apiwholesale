@@ -130,3 +130,17 @@ memory: "",
 
 ## README presentation
 [Readme Driven Development](http://www.slideshare.net/maetl/readme-driven-development-12783652)
+
+
+### mgo
+I have yet to write a service that would keep a connection alive and
+handle reconnecting. What's the best practice for this in Go and mgo / other engines?
+
+In mgo, what I think is recommended (at least it seems to work for me)
+is that you use mgo.Dial to connect to MongoDB on startup.
+Then you use Session.Copy on that original session for every time you need
+to concurrently use the DB (such as per incoming http request
+if you are writing a web service)
+
+
+http://denis.papathanasiou.org/2012/10/14/go-golang-and-mongodb-using-mgo/comment-page-1/

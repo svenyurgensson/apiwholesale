@@ -1,23 +1,27 @@
 package routes
 
 import (
-	"../controllers"
-	"../system"
+    "../controllers"
+    "../system"
+    "../middleware"
 
-	"github.com/zenazn/goji"
+    "github.com/zenazn/goji"
+    "github.com/zenazn/goji/web"
 )
 
 func Include() {
-	base_url := "/" + system.ApiVersion
+    base_url := "/" + system.ApiVersion
 
-	goji.Get(base_url + "/ping", controllers.Ping)
+    goji.Get(base_url + "/ping", controllers.Ping)
+    goji.Post(base_url + "/session", controllers.SessionCreate)
 
-	goji.Post(base_url + "/session", controllers.SessionCreate)
-	goji.Delete(base_url + "/session", controllers.SessionDelete)
+    restricted := web.New()
+    restricted.Use(middleware.TokenAuth)
+    restricted.Delete(base_url + "/session", controllers.SessionDelete)
+    restricted.Get(base_url + "/orders", controllers.OrdersList)
+    restricted.Post(base_url + "/orders", controllers.OrderCreate)
+    restricted.Put(base_url + "/orders", controllers.OrderUpdate)
+    restricted.Delete(base_url + "/orders", controllers.OrderDelete)
 
-	goji.Get(base_url + "/orders", controllers.OrdersList)
-	goji.Post(base_url + "/orders", controllers.OrderCreate)
-	goji.Put(base_url + "/orders", controllers.OrderUpdate)
-	goji.Delete(base_url + "/orders", controllers.OrderDelete)
-
+    goji.Handle("/*", restricted)
 }

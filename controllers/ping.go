@@ -6,7 +6,7 @@ import (
     "../system"
 
     "github.com/zenazn/goji/web"
-    "gopkg.in/mgo.v2"
+//    "gopkg.in/mgo.v2"
 )
 
 type Stat struct {
@@ -14,19 +14,26 @@ type Stat struct {
     Version         string `json:"version"`
     Hostname        string `json:"hostname"`
     BootTimestamp   string `json:"bootTimestamp"`
+    DBSocketsAlive  int `json:"dbSocketsAlive"`
+    DBSocketsInUse  int `json:"dbSocketsInUse"`
 }
 
+
 func Ping(c web.C, w http.ResponseWriter, r *http.Request) {
-    mstats := mgo.GetStats()
+    state := "OK"
+    if system.GetSession().Ping() != nil {
+        state = "FAIL"
+    }
+//    mstats := mgo.GetStats()
 
     stats := &Stat{
-        State: "OK",
+        State: state,
         Version: system.Version,
         Hostname: system.Hostname,
         BootTimestamp: system.Boot_time,
+        DBSocketsAlive: 22, //mstats.SocketsAlive,
+        DBSocketsInUse: 33, //mstats.SocketsInUse,
     }
-
-    system.DEBUG(mstats)
 
     encoder := json.NewEncoder(w)
     w.Header().Set("Content-Type", "application/json")
