@@ -20,8 +20,8 @@ func Include() {
     restricted.Delete(base_url + "/session", controllers.SessionDelete)
     restricted.Get(base_url + "/orders", controllers.OrdersList)
     restricted.Post(base_url + "/orders", controllers.OrderCreate)
-    restricted.Put(base_url + "/orders", controllers.OrderUpdate)
-    restricted.Delete(base_url + "/orders", controllers.OrderDelete)
+    restricted.Put(base_url + "/order/:order_id", controllers.OrderUpdate)
+    restricted.Delete(base_url + "/order/:order_id", controllers.OrderDelete)
 
     goji.Handle("/*", restricted)
 }

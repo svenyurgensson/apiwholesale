@@ -23,13 +23,13 @@ func TokenAuth(c *web.C, h http.Handler) http.Handler {
 		parts := str.Split(t, ":")
 
 		if len(parts) < 2 {
-			http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+			http.Error(w, http.StatusText(http.StatusForbidden), http.StatusForbidden)
 			return
 		}
 
 		customer, err := models.GetCustomerByToken(parts[1])
 		if err != nil {
-			http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 			return
 		}
 
