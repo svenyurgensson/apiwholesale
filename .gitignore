@@ -2,4 +2,5 @@ doc/
 tmp/
 release/
 Guardfile
+*.log
 api_wsc
