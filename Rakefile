@@ -1,5 +1,13 @@
 #!/usr/bin/env ruby
 
+begin
+  gem "mongo"
+rescue Gem::LoadError
+  puts ".. installing mongo gem"
+  `gem i mongo`
+end
+
+
 task default: :seed
 
 
