@@ -35,13 +35,25 @@ module Seed extend self
           email: "email@mail.ru",
           password: "something_simple",
           token: "simple-token",
-          tokenTTL: Time.now + 10 * 24 * 3600
+          tokenTTL: Time.now + 10 * 24 * 3600,
+
+          created_at: Time.now - 10000,
+          updated_at: Time.now - 8000,
+          lastSeen_at: Time.now,
+
+          raw_data: {},
         },
         {
           email: "email@google.com",
           password: "qUIteHArd_2Crack",
           token: nil,
-          tokenTTL: nil
+          tokenTTL: nil,
+
+          created_at: Time.now - 6000,
+          updated_at: Time.now - 3000,
+          lastSeen_at: Time.now - 1000 ,
+
+          raw_data: {},
         },
       ])
   end
@@ -55,11 +67,13 @@ module Seed extend self
       [
         {
           created_at: Time.now,
+          updated_at: Time.now,
           customer_id: c["_id"],
           raw_data: "huevert"
         },
         {
           created_at: Time.now - 10000,
+          updated_at: Time.now - 8000,
           customer_id: c["_id"],
           raw_data: "BADABOOOM!"
         }

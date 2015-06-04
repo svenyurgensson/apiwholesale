@@ -5,12 +5,11 @@ import (
     "os"
     "flag"
     "strings"
-    "time"
-    "github.com/kylelemons/go-gypsy/yaml"
-    "gopkg.in/mgo.v2"
 
-    "strconv"
-    "gopkg.in/mgo.v2/bson"
+    "github.com/kylelemons/go-gypsy/yaml"
+
+    "gopkg.in/mgo.v2"
+    //"gopkg.in/mgo.v2/bson"
 )
 
 const Author = "Yury Batenko"
