@@ -9,14 +9,22 @@ $client = Mongo::Client.new([ '127.0.0.1:27017' ], database: test_db, connect: :
 
 module Seed extend self
 
+  def orders_coll
+    $client[:orders]
+  end
+
   def clear_orders
     puts "... clear orders"
-    $client[:orders].drop
+    orders_coll.drop
+  end
+
+  def customers_coll
+    $client[:customers]
   end
 
   def clear_customers
     puts "... clear customers"
-    $client[:customers].drop
+    customers_coll.drop
   end
 
   def clear_all
@@ -29,7 +37,7 @@ module Seed extend self
     puts "... inserting customers"
     maybe_create_collection(:customers)
 
-    $client[:customers].insert_many(
+    customers_coll.insert_many(
       [
         {
           email: "email@mail.ru",
@@ -62,8 +70,8 @@ module Seed extend self
     puts ".. insert orders"
     maybe_create_collection(:orders)
 
-    c = $client[:customers].find().first
-    $client[:orders].insert_many(
+    c = customers_coll.find().first
+    orders_coll.insert_many(
       [
         {
           created_at: Time.now,
