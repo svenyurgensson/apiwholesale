@@ -1,6 +1,6 @@
 # Here we will access
 base_url: http://localhost
-port: 4700
+port: 8000
 version_api: v1
 
 title: Wholesale Customer Orders API
@@ -16,15 +16,15 @@ original:
   port:
 
 # require arbitrary ruby file before starting tests
-require:
+require: ./spec/fixtures/seed.rb
 # in case if you has preloaded ruby file, here you can
 # call any ruby methods, say: Namespace::DB.clean() or smth
 # also you could run any shell commands: 'my_script.sh -v clear_db'
 run:
-  before_all: \mongo localhost:27017/wsapi_test spec/fixtures/create_user.js 2>&1 >/dev/null
-  after_all: \mongo localhost:27017/wsapi_test --eval "db.customers.drop();" 2>&1 >/dev/null
-  before_each:
-  after_each:
+  before_all: Seed.clear_all
+  after_all: Seed.clear_all
+  before_each: Seed.fill_docs
+  after_each: Seed.clear_all
   on_error: exit # exit, alert, skip
 headers:
   # exclude headers from resulting documentation
@@ -106,24 +106,39 @@ endpoints:
     methods:
       get:
         -
+          description: When non-authenticated return 406 Forbidden
           headers:
           expect:
             code: 406
+        -
+          description: When authenticated, returns authenticated customer`s orders list
+          headers:
+            Authorization: "token: simple-token"
+          expect:
+            code: 200
       post:
         -
+          description: When non-authenticated
           headers:
           expect:
             code: 406
+        -
+          headers:
+            Authorization: "token: simple-token"
+          expect:
+            code: 201
       options:
         -
           headers:
+            Authorization: "token: simple-token"
           expect:
             code: 406
       head:
         -
           headers:
+            Authorization: "token: simple-token"
           expect:
-            code: 406
+            code: 200
 
   session:
     description: Create session

@@ -17,7 +17,6 @@ task :seed do
 
   Seed.clear_all
 
-  Seed.insert_customers
-  Seed.insert_orders
+  Seed.fill_docs
 
 end

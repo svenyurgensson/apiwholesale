@@ -1,6 +1,10 @@
 require "mongo"
 
-$client = Mongo::Client.new([ '127.0.0.1:27017' ], database: 'apiwholesale_dev', connect: :direct)
+test_db =  ENV["API_DB"] ||  "apiwholesale_dev"
+
+Mongo::Logger.logger.level =  3
+
+$client = Mongo::Client.new([ '127.0.0.1:27017' ], database: test_db, connect: :direct)
 
 
 module Seed extend self
@@ -23,6 +27,8 @@ module Seed extend self
 
   def insert_customers
     puts "... inserting customers"
+    maybe_create_collection(:customers)
+
     $client[:customers].insert_many(
       [
         {
@@ -42,6 +48,8 @@ module Seed extend self
 
   def insert_orders
     puts ".. insert orders"
+    maybe_create_collection(:orders)
+
     c = $client[:customers].find().first
     $client[:orders].insert_many(
       [
@@ -56,6 +64,17 @@ module Seed extend self
           raw_data: "BADABOOOM!"
         }
       ])
+  end
+
+  def fill_docs
+    insert_customers
+    insert_orders
+  end
+
+  def maybe_create_collection(name)
+    unless $client.database.collection_names.include?(name.to_s)
+      $client[name.to_sym].create
+    end
   end
 
 end
