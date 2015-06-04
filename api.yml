@@ -141,37 +141,42 @@ endpoints:
             code: 200
 
   session:
-    description: Create session
-    params: Doesn`t expect any params
+    description: Create and destroy customer session
+    params: "On creation expect json {email: customer@email.com, password: hArD2CRack}"
     methods:
       post:
         -
-          description: Create session sucesfully when login/pwd known. Returns token
+          description: Create session sucesfully when email/password is known. Returns token
           headers:
             content-type: application/json
+          body: '{"email": "email@email.com", "password": "something"}'
           expect:
             code: 201
             headers:
               content-type:application/json
             body: "{token: 'some real token'}"
         -
-          description: Return Forbidden when login/pwd unknown
+          description: Return Forbidden when email/password unknown
           headers:
             content-type: application/json
           expect:
             code: 403
       delete:
         -
+          description: Destroy customer`s session when customer is known
           headers:
+            Authorization: "token: simple-token"
           expect:
-            code: 406
+            code: 200
       options:
         -
+          description: Returns known HTTP methods for this endpoint, other facilities
           headers:
           expect:
-            code: 406
+            code: 200
       head:
         -
+          description: Empty response
           headers:
           expect:
-            code: 406
+            code: 200
