@@ -50,6 +50,21 @@ func Exists(q bson.M) (bool, error) {
     return count > 0, nil
 }
 
+func GetOrder(c Customer, id string) (Order, error) {
+    order := Order{}
+    session := s.GetSession()
+    defer session.Close()
+    coll := session.DB(s.DB).C("orders")
+
+    if ! bson.IsObjectIdHex(id) {
+        return order, errors.New("Wrong order id format")
+    }
+
+    err := coll.Find(bson.M{"customer_id": c.Id, "_id": bson.ObjectIdHex(id)}).One(&order)
+
+    return order, err
+}
+
 func GetOrders(c *Customer) ([]Order, error) {
     orders := []Order{}
     session := s.GetSession()

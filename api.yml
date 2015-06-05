@@ -12,8 +12,8 @@ API является веб-сервисом, который позволяет 
 footer: (c) Yury Batenko for alibaba24.ru 2015
 original:
   # what will be printed into  formatted output, your "real" API URL
-  base_url: http://apiwholesale.alibaba24.ru
-  port:
+  base_url: http://localhost #http://apiwholesale.alibaba24.ru
+  port: 8000
 
 # require arbitrary ruby file before starting tests
 require: ./spec/fixtures/seed.rb
@@ -21,7 +21,7 @@ require: ./spec/fixtures/seed.rb
 # call any ruby methods, say: Namespace::DB.clean() or smth
 # also you could run any shell commands: 'my_script.sh -v clear_db'
 run:
-  before_all: Seed.clear_all
+  before_all: Seed.clear_all; Seed.fill_docs
   after_all: Seed.clear_all
   before_each: Seed.fill_docs
   after_each: Seed.clear_all
@@ -39,66 +39,126 @@ endpoints:
     methods:
       get:
         -
-          description: Simple endpoint
+          description: Return json with current state of service
           headers:
             accept: application/json
           expect:
             code: 200
-            content-type: application/json;charset=utf-8
-        -
-          headers:
-          expect:
-            code: 406
+            content-type: application/json
+            body: OK
       post:
         -
+          description: 403 Forbidden when method not allowed
           headers:
           expect:
-            code: 406
+            code: 403
+      put:
+        -
+          description: 403 Forbidden when method not allowed
+          headers:
+          expect:
+            code: 403
       delete:
         -
+          description: 403 Forbidden when method not allowed
           headers:
           expect:
-            code: 406
+            code: 403
       options:
         -
+          description: 403 Forbidden when method not allowed
           headers:
           expect:
-            code: 406
+            code: 403
       head:
         -
+          description: Return 200 OK on HEAD method
           headers:
           expect:
-            code: 406
+            code: 200
 
   order:
     description: Operations with given order
-    params: Doesn`t expect any params
+    params: "Expect order_id in path"
     methods:
       get:
         -
+          description: When authorized and order exists return order
+          path:
+            eval: "'/' + Seed.order_for()['_id'].to_s"
+          headers:
+            Authorization: "token: simple-token"
+          expect:
+            code: 200
+      post:
+        -
+          description: 403 Forbidden, method not permitted
           headers:
           expect:
-            code: 406
+            code: 403
+
       put:
         -
+          description: 200 OK when authorized and order valid, update order
+          path:
+            eval: "'/' + Seed.order_for()['_id'].to_s"
           headers:
+            Authorization: "token: simple-token"
+            Content-Type: application/json
+          body:
+            json:
+              raw_data:
+                something: new
+                here: will be converted to json
           expect:
-            code: 406
+            code: 200
+        -
+          description: 400 Bad Request when authorized and order not valid
+          path:
+            eval: "'/' + Seed.order_for()['_id'].to_s"
+          headers:
+            Authorization: "token: simple-token"
+            Content-Type: application/json
+          body: Wrong Json
+          expect:
+            code: 400
+
       delete:
         -
+          description: Successfull delete order  when authorized and order presents
+          path:
+            eval: "'/' + Seed.order_for()['_id'].to_s"
           headers:
+            Authorization: "token: simple-token"
           expect:
-            code: 406
+            code: 204
+        -
+          description: 401 Unauthorized when not authorized
+          headers:
+            Authorization: "token: UNKNOWN"
+          expect:
+            code: 401
+        -
+          description: 404 Not found when authorized but no such order
+          path: 55713e6a646576758d00001a
+          headers:
+            Authorization: "token: simple-token"
+          expect:
+            code: 404
+
       options:
         -
+          description: 403 Forbidden when method not allowed
           headers:
           expect:
-            code: 406
+            code: 403
+
       head:
         -
+          description: 403 Forbidden when method not allowed
           headers:
           expect:
-            code: 406
+            code: 403
 
   orders:
     description: Operations with list of orders
@@ -106,10 +166,10 @@ endpoints:
     methods:
       get:
         -
-          description: When non-authenticated return 406 Forbidden
+          description: When non-authenticated return 403 Forbidden
           headers:
           expect:
-            code: 406
+            code: 403
         -
           description: When authenticated, returns authenticated customer`s orders list
           headers:
@@ -118,23 +178,31 @@ endpoints:
             code: 200
       post:
         -
-          description: When non-authenticated
+          description: When non-authenticated return 403 Forbidden
           headers:
           expect:
-            code: 406
+            code: 403
         -
+          description: When authenticated and body valid creates new Order
           headers:
             Authorization: "token: simple-token"
+          body:
+            json:
+              raw_data:
+                something: new
+                here: will be converted to json
           expect:
             code: 201
       options:
         -
+          description: Return OK
           headers:
             Authorization: "token: simple-token"
           expect:
-            code: 406
+            code: 200
       head:
         -
+          description: Return OK
           headers:
             Authorization: "token: simple-token"
           expect:
@@ -144,39 +212,72 @@ endpoints:
     description: Create and destroy customer session
     params: "On creation expect json {email: customer@email.com, password: hArD2CRack}"
     methods:
+      get:
+        -
+          description: 403 Forbidden
+          headers:
+          expect:
+            code: 403
       post:
         -
           description: Create session sucesfully when email/password is known. Returns token
           headers:
             content-type: application/json
-          body: '{"email": "email@email.com", "password": "something"}'
+          body:
+            json:
+              email: "email@mail.ru"
+              password: "something_simple"
           expect:
             code: 201
             headers:
               content-type:application/json
-            body: "{token: 'some real token'}"
+            body: token
         -
-          description: Return Forbidden when email/password unknown
+          description: Return 404 Not Found when email/password unknown
           headers:
             content-type: application/json
+          expect:
+            code: 404
+          body:
+            json:
+              email: "unknown@mail.ru"
+              password: "BAD GUY"
+        -
+          description: Return 400 Bad request when not given input json
+          headers:
+            content-type: application/json
+          expect:
+            code: 400
+          body:
+      put:
+        -
+          description: 403 Forbidden
+          headers:
           expect:
             code: 403
       delete:
         -
-          description: Destroy customer`s session when customer is known
+          description: Destroy customer`s session when customer`s token is known
           headers:
             Authorization: "token: simple-token"
           expect:
-            code: 200
+            code: 204
+        -
+          description: 401 Unauthorized if token not given or unknown
+          headers:
+            Authorization: "token: UNKNOWN"
+          expect:
+            code: 401
+
       options:
         -
-          description: Returns known HTTP methods for this endpoint, other facilities
+          description: 403 Forbidden when method not allowed
           headers:
           expect:
-            code: 200
+            code: 403
       head:
         -
-          description: Empty response
+          description: 403 Forbidden when method not allowed
           headers:
           expect:
-            code: 200
+            code: 403

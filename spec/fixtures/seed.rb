@@ -99,4 +99,18 @@ module Seed extend self
     end
   end
 
+
+  def order_for(customer = customer_with_orders)
+    orders_coll.find(customer_id: customer["_id"]).first
+  end
+
+  def orders_for(customer = customer_with_orders)
+    orders_coll.find(customer_id: customer["_id"]).to_a
+  end
+
+  def customer_with_orders
+    customers_coll.find().first
+  end
+
+
 end

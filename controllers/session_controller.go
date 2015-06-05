@@ -6,7 +6,7 @@ import (
 
     "time"
 
-//    s "../system"
+    s "../system"
 
     "../models"
     "github.com/zenazn/goji/web"
@@ -71,4 +71,8 @@ func SessionDelete(c web.C, w http.ResponseWriter, r *http.Request) {
     }
 
     w.WriteHeader(http.StatusNoContent)
+}
+
+func void_session(){
+    s.DEBUG("void")
 }
