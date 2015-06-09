@@ -67,7 +67,7 @@ module Seed extend self
   end
 
   def insert_orders
-    puts ".. insert orders"
+    puts "... insert orders"
     maybe_create_collection(:orders)
 
     c = customers_coll.find().first
