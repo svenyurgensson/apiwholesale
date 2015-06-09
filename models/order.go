@@ -51,6 +51,7 @@ func Exists(q bson.M) (bool, error) {
 }
 
 func GetOrder(c Customer, id string) (Order, error) {
+    var order Order
     order := Order{}
     session := s.GetSession()
     defer session.Close()
