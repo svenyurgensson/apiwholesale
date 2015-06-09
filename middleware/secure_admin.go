@@ -1,38 +1,40 @@
 package middleware
 
 import (
-	"net/http"
-	"encoding/base64"
-	"strings"
+    "net/http"
+    "encoding/base64"
+    "strings"
+    "../system"
 
-	"github.com/zenazn/goji/web"
+    "github.com/zenazn/goji/web"
 )
-
-// Nobody will ever guess this!
-const Password = "admin:admin"
 
 // SuperSecure is HTTP Basic Auth middleware for super-secret admin page. Shhhh!
 func SuperSecure(c *web.C, h http.Handler) http.Handler {
-	fn := func(w http.ResponseWriter, r *http.Request) {
-		auth := r.Header.Get("Authorization")
-		if !strings.HasPrefix(auth, "Basic ") {
-			pleaseAuth(w)
-			return
-		}
+    fn := func(w http.ResponseWriter, r *http.Request) {
 
-		password, err := base64.StdEncoding.DecodeString(auth[6:])
-		if err != nil || string(password) != Password {
-			pleaseAuth(w)
-			return
-		}
+        auth := r.Header.Get("Authorization")
 
-		h.ServeHTTP(w, r)
-	}
-	return http.HandlerFunc(fn)
+        if !strings.HasPrefix(auth, "Basic ") {
+            pleaseAuth(w)
+            return
+        }
+
+        password, err := base64.StdEncoding.DecodeString(auth[6:])
+
+        if err != nil || string(password) != system.AdminCredentials {
+            pleaseAuth(w)
+            return
+        }
+
+        c.Env["Admin"] = true
+        h.ServeHTTP(w, r)
+    }
+    return http.HandlerFunc(fn)
 }
 
 func pleaseAuth(w http.ResponseWriter) {
-	w.Header().Set("WWW-Authenticate", `Basic realm="Gritter"`)
-	w.WriteHeader(http.StatusUnauthorized)
-	w.Write([]byte("Need login/password!\n"))
+    w.Header().Set("WWW-Authenticate", `Basic realm="Gritter"`)
+    w.WriteHeader(http.StatusUnauthorized)
+    w.Write([]byte("Wrong or absent login/password!\n"))
 }

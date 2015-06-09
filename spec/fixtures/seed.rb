@@ -14,7 +14,7 @@ module Seed extend self
   end
 
   def clear_orders
-    puts "... clear orders"
+    log "... clear orders"
     orders_coll.drop
   end
 
@@ -23,7 +23,7 @@ module Seed extend self
   end
 
   def clear_customers
-    puts "... clear customers"
+    log "... clear customers"
     customers_coll.drop
   end
 
@@ -34,7 +34,7 @@ module Seed extend self
 
 
   def insert_customers
-    puts "... inserting customers"
+    log "... inserting customers"
     maybe_create_collection(:customers)
 
     customers_coll.insert_many(
@@ -67,7 +67,7 @@ module Seed extend self
   end
 
   def insert_orders
-    puts "... insert orders"
+    log "... insert orders"
     maybe_create_collection(:orders)
 
     c = customers_coll.find().first
@@ -110,6 +110,11 @@ module Seed extend self
 
   def customer_with_orders
     customers_coll.find().first
+  end
+
+
+  def log(txt)
+    # puts txt
   end
 
 

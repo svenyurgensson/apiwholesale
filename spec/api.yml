@@ -41,7 +41,8 @@ endpoints:
         -
           description: Return json with current state of service
           headers:
-            accept: application/json
+            Accept: application/json
+            Origin: http://foo.com
           expect:
             code: 200
             content-type: application/json
@@ -50,30 +51,35 @@ endpoints:
         -
           description: 403 Forbidden when method not allowed
           headers:
+            Origin: http://foo.com
           expect:
             code: 403
       put:
         -
           description: 403 Forbidden when method not allowed
           headers:
+            Origin: http://foo.com
           expect:
             code: 403
       delete:
         -
           description: 403 Forbidden when method not allowed
           headers:
+            Origin: http://foo.com
           expect:
             code: 403
       options:
         -
-          description: 403 Forbidden when method not allowed
+          description: 200 OK on OPTIONS
           headers:
+            Origin: http://foo.com
           expect:
-            code: 403
+            code: 200
       head:
         -
           description: Return 200 OK on HEAD method
           headers:
+            Origin: http://foo.com
           expect:
             code: 200
 
@@ -83,18 +89,19 @@ endpoints:
     methods:
       get:
         -
-          only:
           description: When authorized and order exists return order
           path:
             eval: "'/' + Seed.order_for()['_id'].to_s"
           headers:
             Authorization: "token: simple-token"
+            Origin: http://foo.com
           expect:
             code: 200
       post:
         -
           description: 403 Forbidden, method not permitted
           headers:
+            Origin: http://foo.com
           expect:
             code: 403
 
@@ -106,6 +113,7 @@ endpoints:
           headers:
             Authorization: "token: simple-token"
             Content-Type: application/json
+            Origin: http://foo.com
           body:
             json:
               raw_data:
@@ -120,6 +128,7 @@ endpoints:
           headers:
             Authorization: "token: simple-token"
             Content-Type: application/json
+            Origin: http://foo.com
           body: Wrong Json
           expect:
             code: 400
@@ -131,12 +140,14 @@ endpoints:
             eval: "'/' + Seed.order_for()['_id'].to_s"
           headers:
             Authorization: "token: simple-token"
+            Origin: http://foo.com
           expect:
             code: 204
         -
           description: 401 Unauthorized when not authorized
           headers:
             Authorization: "token: UNKNOWN"
+            Origin: http://foo.com
           expect:
             code: 401
         -
@@ -144,20 +155,23 @@ endpoints:
           path: 55713e6a646576758d00001a
           headers:
             Authorization: "token: simple-token"
+            Origin: http://foo.com
           expect:
             code: 404
 
       options:
         -
-          description: 403 Forbidden when method not allowed
+          description: 200 OK on OPTIONS
           headers:
+            Origin: http://foo.com
           expect:
-            code: 403
+            code: 200
 
       head:
         -
           description: 403 Forbidden when method not allowed
           headers:
+            Origin: http://foo.com
           expect:
             code: 403
 
@@ -169,24 +183,28 @@ endpoints:
         -
           description: When non-authenticated return 403 Forbidden
           headers:
+            Origin: http://foo.com
           expect:
             code: 403
         -
           description: When authenticated, returns authenticated customer`s orders list
           headers:
             Authorization: "token: simple-token"
+            Origin: http://foo.com
           expect:
             code: 200
       post:
         -
           description: When non-authenticated return 403 Forbidden
           headers:
+            Origin: http://foo.com
           expect:
             code: 403
         -
           description: When authenticated and body valid creates new Order
           headers:
             Authorization: "token: simple-token"
+            Origin: http://foo.com
           body:
             json:
               raw_data:
@@ -194,18 +212,21 @@ endpoints:
                 here: will be converted to json
           expect:
             code: 201
+
       options:
         -
-          description: Return OK
+          description: 200 OK on OPTIONS
           headers:
-            Authorization: "token: simple-token"
+            Origin: http://foo.com
           expect:
             code: 200
+
       head:
         -
           description: Return OK
           headers:
             Authorization: "token: simple-token"
+            Origin: http://foo.com
           expect:
             code: 200
 
@@ -217,6 +238,7 @@ endpoints:
         -
           description: 403 Forbidden
           headers:
+            Origin: http://foo.com
           expect:
             code: 403
       post:
@@ -224,6 +246,7 @@ endpoints:
           description: Create session sucesfully when email/password is known. Returns token
           headers:
             content-type: application/json
+            Origin: http://foo.com
           body:
             json:
               email: "email@mail.ru"
@@ -237,6 +260,7 @@ endpoints:
           description: Return 404 Not Found when email/password unknown
           headers:
             content-type: application/json
+            Origin: http://foo.com
           expect:
             code: 404
           body:
@@ -247,6 +271,7 @@ endpoints:
           description: Return 400 Bad request when not given input json
           headers:
             content-type: application/json
+            Origin: http://foo.com
           expect:
             code: 400
           body:
@@ -254,6 +279,7 @@ endpoints:
         -
           description: 403 Forbidden
           headers:
+            Origin: http://foo.com
           expect:
             code: 403
       delete:
@@ -261,24 +287,48 @@ endpoints:
           description: Destroy customer`s session when customer`s token is known
           headers:
             Authorization: "token: simple-token"
+            Origin: http://foo.com
           expect:
             code: 204
         -
           description: 401 Unauthorized if token not given or unknown
           headers:
             Authorization: "token: UNKNOWN"
+            Origin: http://foo.com
           expect:
             code: 401
 
       options:
         -
-          description: 403 Forbidden when method not allowed
+          description: 200 OK on OPTIONS
           headers:
+            Origin: http://foo.com
           expect:
-            code: 403
+            code: 200
+
       head:
         -
           description: 403 Forbidden when method not allowed
           headers:
+            Origin: http://foo.com
           expect:
             code: 403
+
+  "admin/":
+    description: Admin interface access
+    params: No params expected
+    methods:
+      get:
+        -
+          description: 401 Unauthorized when non-authorized
+          headers:
+            Origin: http://foo.com
+          expect:
+            code: 401
+        -
+          description: 200 OK when authorized
+          headers:
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 200

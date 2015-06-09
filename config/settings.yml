@@ -4,6 +4,7 @@ production:
     hosts:
       - localhost:27017
     options:
+  admin_credentials: admin:admin
 
 development:
   db:
@@ -11,6 +12,7 @@ development:
     hosts:
       - localhost:27017
     options:
+  admin_credentials: admin:admin
 
 test:
   db:
@@ -18,3 +20,4 @@ test:
     hosts:
       - localhost:27017
     options:
+  admin_credentials: admin:admin
