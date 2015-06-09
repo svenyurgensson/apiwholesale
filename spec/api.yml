@@ -72,6 +72,7 @@ endpoints:
             code: 403
       head:
         -
+          skip:
           description: Return 200 OK on HEAD method
           headers:
           expect:
