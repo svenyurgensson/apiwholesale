@@ -72,7 +72,6 @@ endpoints:
             code: 403
       head:
         -
-          skip:
           description: Return 200 OK on HEAD method
           headers:
           expect:
@@ -84,6 +83,7 @@ endpoints:
     methods:
       get:
         -
+          only:
           description: When authorized and order exists return order
           path:
             eval: "'/' + Seed.order_for()['_id'].to_s"
