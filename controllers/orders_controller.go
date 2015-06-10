@@ -16,7 +16,7 @@ import (
 func OrdersList(c web.C, w http.ResponseWriter, r *http.Request) {
     customer := c.Env["auth_customer"].(models.Customer)
 
-    resources, err := models.GetOrders(&customer)
+    resources, err := models.GetCustomerOrders(&customer)
     if err != nil {
         http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
         return
@@ -33,7 +33,7 @@ func OrderGet(c web.C, w http.ResponseWriter, r *http.Request) {
     customer := c.Env["auth_customer"].(models.Customer)
 
     order_id := c.URLParams["order_id"]
-    resource, err := models.GetOrder(customer, order_id)
+    resource, err := models.GetCustomerOrder(customer, order_id)
 
     if err != nil {
         http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -73,7 +73,7 @@ func OrderDelete(c web.C, w http.ResponseWriter, r *http.Request) {
     customer := c.Env["auth_customer"].(models.Customer)
 
     order_id := c.URLParams["order_id"]
-    err := models.DeleteOrder(customer, order_id)
+    err := models.DeleteCustomerOrder(customer, order_id)
 
     if err != nil {
         http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)

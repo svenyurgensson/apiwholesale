@@ -50,7 +50,7 @@ func ExistsOrders(q bson.M) (bool, error) {
     return count > 0, nil
 }
 
-func GetOrder(c Customer, id string) (Order, error) {
+func GetCustomerOrder(c Customer, id string) (Order, error) {
     order := Order{}
     session := s.GetSession()
     defer session.Close()
@@ -65,7 +65,7 @@ func GetOrder(c Customer, id string) (Order, error) {
     return order, err
 }
 
-func GetOrders(c *Customer) ([]Order, error) {
+func GetCustomerOrders(c *Customer) ([]Order, error) {
     orders := []Order{}
     session := s.GetSession()
     defer session.Close()
@@ -76,7 +76,7 @@ func GetOrders(c *Customer) ([]Order, error) {
     return orders, err
 }
 
-func DeleteOrder(c Customer, id string) error {
+func DeleteCustomerOrder(c Customer, id string) error {
     session := s.GetSession()
     defer session.Close()
     coll := session.DB(s.DB).C("orders")
@@ -87,5 +87,26 @@ func DeleteOrder(c Customer, id string) error {
 
     return coll.Remove(bson.M{"customer_id": c.Id, "_id": bson.ObjectIdHex(id)})
 }
+
+
+func GetOrders(q bson.M) ([]Order, error) {
+    orders := []Order{}
+    session := s.GetSession()
+    defer session.Close()
+    coll := session.DB(s.DB).C("orders")
+
+    err := coll.Find(q).All(&orders)
+
+    return orders, err
+}
+
+
+
+
+
+
+
+
+
 
 // http://stevenwhite.com/building-a-rest-service-with-golang-3/

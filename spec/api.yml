@@ -446,3 +446,43 @@ endpoints:
           expect:
             code: 204
             eval: "Seed.customer_with_orders['email'] == 'email2@mail.ru'"
+
+      delete:
+        -
+          description: 404 Not Found if no given Customer found
+          path: 00780af96465762046000000
+          headers:
+            content-type: application/json
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 404
+        -
+          description: Delete Customer succesfully if given Customer presents
+          path:
+            eval: "Seed.customer_with_orders['_id'].to_s"
+          headers:
+            content-type: application/json
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 204
+
+  "admin/orders":
+    description: Admin interface accessing list of Orders
+    params: No params expected
+    methods:
+      get:
+        -
+          description: 401 Unauthorized when credentials not privided
+          headers:
+            Origin: http://foo.com
+          expect:
+            code: 401
+        -
+          description: 200 OK And list of orders when authorized
+          headers:
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 200
