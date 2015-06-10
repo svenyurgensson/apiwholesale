@@ -1,14 +1,15 @@
 package models
 
 import (
-	s "../system"
-	"gopkg.in/mgo.v2/bson"
-
 	"crypto/rand"
 	"fmt"
 	"io"
 	"time"
 	str "strings"
+	"errors"
+
+	s "../system"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type (
@@ -48,10 +49,27 @@ func (c *Customer) RenewToken() string {
 	return uuid_string
 }
 
-func (c *Customer) Upsert() error {
+func (c *Customer) Validate() error {
+
+	if len(c.Email) < 1 {
+		return errors.New("Wrong customer email!")
+	}
+
+	if len(c.Password) < 4 {
+		return errors.New("Wrong customer password!")
+	}
+	return nil
+}
+
+
+func (c *Customer) Upsert() (bson.ObjectId, error) {
 	session := s.GetSession()
 	defer session.Close()
 	coll := session.DB(s.DB).C("customers")
+
+	if error := c.Validate(); error != nil {
+		return bson.NewObjectId(), error
+	}
 
 	var err error
 
@@ -65,7 +83,7 @@ func (c *Customer) Upsert() error {
 		err = coll.Update(bson.M{"_id": c.Id}, bson.M{"$set": c})
 	}
 
-	return err
+	return c.Id, err
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -94,4 +112,49 @@ func GetCustomerByCredentials(email string, password string) (Customer, error) {
 		One(&result)
 
 	return result, err
+}
+
+
+func GetCustomers() ([]Customer, error) {
+	session := s.GetSession()
+	defer session.Close()
+	coll := session.DB(s.DB).C("customers")
+
+	result := []Customer{}
+	err := coll.Find(bson.M{}).All(&result)
+
+	return result, err
+}
+
+func ExistsCustomers(q bson.M) (bool, error) {
+	session := s.GetSession()
+	defer session.Close()
+	coll := session.DB(s.DB).C("customers")
+
+	count, err := coll.Find(q).Count()
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}
+
+func GetCustomer(q bson.M) (Customer, error) {
+	session := s.GetSession()
+	defer session.Close()
+	coll := session.DB(s.DB).C("customers")
+
+	result := Customer{}
+	err := coll.Find(q).One(&result)
+
+	return result, err
+}
+
+
+func DeleteCustomer(q bson.M) error {
+	session := s.GetSession()
+	defer session.Close()
+	coll := session.DB(s.DB).C("customers")
+
+	return coll.Remove(q)
 }

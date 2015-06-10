@@ -1,53 +1,66 @@
 package routes
 
 import (
-    "../controllers"
-    "../system"
-    "../middleware"
+	"../controllers"
+	"../system"
+	"../middleware"
 
-    "github.com/zenazn/goji"
-    "github.com/zenazn/goji/web"
-    m "github.com/zenazn/goji/web/middleware"
-    "github.com/rs/cors"
+	"github.com/zenazn/goji"
+	"github.com/zenazn/goji/web"
+	m "github.com/zenazn/goji/web/middleware"
+	"github.com/rs/cors"
 )
 
 func Include() {
-    base_url := "/" + system.ApiVersion
+	base_url := "/" + system.ApiVersion
 
 
-    c := cors.New(cors.Options{
-        AllowedOrigins: []string{"*"},
-        AllowCredentials: true, //Debug: true,
-    })
-    goji.Use(c.Handler)
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowCredentials: true,
+		//Debug: true,
+	})
+	goji.Use(c.Handler)
 
 
-    goji.Get( base_url + "/ping", controllers.Ping)
-    goji.Post(base_url + "/session", controllers.SessionCreate)
+	goji.Get( base_url + "/ping", controllers.Ping)
+	goji.Post(base_url + "/session", controllers.SessionCreate)
 
-    admin := web.New()
+	admin := web.New()
 
-    goji.Handle(base_url + "/admin/*", admin)
-    admin.Use(m.SubRouter)
-    admin.Use(middleware.SuperSecure)
-    admin.Use(c.Handler)
+	goji.Handle(base_url + "/admin/*", admin)
+	admin.Use(m.SubRouter)
+	admin.Use(middleware.SuperSecure)
+	admin.Use(c.Handler)
 
-    admin.Get("/", controllers.AdminEntry)
+	admin.Get("/customers", controllers.AdminCustomersList)
+	admin.Post("/customers", controllers.AdminCustomerCreate)
+	admin.Get("/customer/:customer_id", controllers.AdminCustomerView)
+	admin.Put("/customer/:customer_id", controllers.AdminCustomerUpdate)
+	admin.Delete("/customer/:customer_id", controllers.AdminCustomerDelete)
 
-    restricted := web.New()
-    restricted.Use(c.Handler)
-    restricted.Use(middleware.TokenAuth)
+	admin.Get("/orders", controllers.AdminOrdersList)
+	admin.Get("/order/:order_id", controllers.AdminOrderView)
+	admin.Put("/order/:order_id", controllers.AdminOrderUpdate)
+	admin.Delete("/order/:order_id", controllers.AdminOrderDelete)
 
-    restricted.Delete(base_url + "/session", controllers.SessionDelete)
+	admin.Get("/", controllers.AdminApplication)
 
-    restricted.Get( base_url + "/orders", controllers.OrdersList)
-    restricted.Post(base_url + "/orders", controllers.OrderCreate)
 
-    restricted.Get(   base_url + "/order/:order_id", controllers.OrderGet)
-    restricted.Put(   base_url + "/order/:order_id", controllers.OrderUpdate)
-    restricted.Delete(base_url + "/order/:order_id", controllers.OrderDelete)
+	restricted := web.New()
+	restricted.Use(c.Handler)
+	restricted.Use(middleware.TokenAuth)
 
-    goji.Handle("/*", restricted)
+	restricted.Delete(base_url + "/session", controllers.SessionDelete)
+
+	restricted.Get( base_url + "/orders", controllers.OrdersList)
+	restricted.Post(base_url + "/orders", controllers.OrderCreate)
+
+	restricted.Get(   base_url + "/order/:order_id", controllers.OrderGet)
+	restricted.Put(   base_url + "/order/:order_id", controllers.OrderUpdate)
+	restricted.Delete(base_url + "/order/:order_id", controllers.OrderDelete)
+
+	goji.Handle("/*", restricted)
 
 }
 

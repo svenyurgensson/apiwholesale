@@ -16,7 +16,7 @@ import (
 func OrdersList(c web.C, w http.ResponseWriter, r *http.Request) {
     customer := c.Env["auth_customer"].(models.Customer)
 
-    orders, err := models.GetOrders(&customer)
+    resources, err := models.GetOrders(&customer)
     if err != nil {
         http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
         return
@@ -26,14 +26,14 @@ func OrdersList(c web.C, w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "application/json")
     w.WriteHeader(http.StatusOK)
 
-    encoder.Encode(orders)
+    encoder.Encode(resources)
 }
 
 func OrderGet(c web.C, w http.ResponseWriter, r *http.Request) {
     customer := c.Env["auth_customer"].(models.Customer)
 
     order_id := c.URLParams["order_id"]
-    order, err := models.GetOrder(customer, order_id)
+    resource, err := models.GetOrder(customer, order_id)
 
     if err != nil {
         http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -44,7 +44,7 @@ func OrderGet(c web.C, w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "application/json")
     w.WriteHeader(http.StatusOK)
 
-    encoder.Encode(order)
+    encoder.Encode(resource)
 }
 
 
@@ -101,7 +101,7 @@ func OrderUpdate(c web.C, w http.ResponseWriter, r *http.Request) {
 
     order.Id = bson.ObjectIdHex(order_id)
     order.CustomerId = customer.Id
-    exists, error := models.Exists(bson.M{"customer_id": customer.Id, "_id": order.Id})
+    exists, error := models.ExistsOrders(bson.M{"customer_id": customer.Id, "_id": order.Id})
 
     if error != nil || exists == false {
         http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -116,6 +116,6 @@ func OrderUpdate(c web.C, w http.ResponseWriter, r *http.Request) {
     w.WriteHeader(http.StatusOK)
 }
 
-func void(){
+func void() {
   s.DEBUG("void")
 }

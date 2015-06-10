@@ -254,7 +254,7 @@ endpoints:
           expect:
             code: 201
             headers:
-              content-type:application/json
+              content-type: application/json
             body: token
         -
           description: Return 404 Not Found when email/password unknown
@@ -320,7 +320,7 @@ endpoints:
     methods:
       get:
         -
-          description: 401 Unauthorized when non-authorized
+          description: 401 Unauthorized when credentials not privided
           headers:
             Origin: http://foo.com
           expect:
@@ -332,3 +332,117 @@ endpoints:
             Origin: http://foo.com
           expect:
             code: 200
+
+  "admin/customers":
+    description: Admin interface accessing list of Customers
+    params: No params expected
+    methods:
+      get:
+        -
+          description: 401 Unauthorized when credentials not privided
+          headers:
+            Origin: http://foo.com
+          expect:
+            code: 401
+        -
+          description: 200 OK when authorized
+          headers:
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 200
+      post:
+        -
+          description: Create Customer succesfully. Return link to created customer
+          headers:
+            content-type: application/json
+            Origin: http://foo.com
+            Authorization: Basic YWRtaW46YWRtaW4=
+          body:
+            json:
+              email: "newemail@mail.ru"
+              password: "something_simple"
+          expect:
+            code: 201
+            headers:
+              Location:
+                eval: "!! headers['location'][/customer/]"
+        -
+          description: Refuse create new Customer if email already exists
+          headers:
+            content-type: application/json
+            Origin: http://foo.com
+            Authorization: Basic YWRtaW46YWRtaW4=
+          body:
+            json:
+              email: "email@mail.ru"
+              password: "something_simple"
+          expect:
+            code: 409
+        -
+          description: Error create Customer if email or password empty or absent
+          headers:
+            content-type: application/json
+            Origin: http://foo.com
+            Authorization: Basic YWRtaW46YWRtaW4=
+          body:
+            json:
+          expect:
+            code: 400
+
+
+  "admin/customer":
+    description: Admin interface access particular Customer
+    params: Expects customer_id in path
+    methods:
+      get:
+        -
+          description: 401 Unauthorized when credentials not privided
+          path:
+            eval: "Seed.customer_with_orders['_id'].to_s"
+          headers:
+            Origin: http://foo.com
+          expect:
+            code: 401
+        -
+          description: 200 OK when authorized and Customer presents
+          path:
+            eval: "Seed.customer_with_orders['_id'].to_s"
+          headers:
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 200
+        -
+          description: 404 Not Found when authorized but Customer not present
+          path: 00780af96465762046000000
+          headers:
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 404
+      put:
+        -
+          description: 404 Not Found if no given Customer found
+          path: 00780af96465762046000000
+          headers:
+            content-type: application/json
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 404
+        -
+          description: Change Customer succesfully if given Customer presents and valid
+          path:
+            eval: "Seed.customer_with_orders['_id'].to_s"
+          headers:
+            content-type: application/json
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          body:
+            json:
+              email: "email2@mail.ru"
+              password: "something_simple"
+          expect:
+            code: 204
+            eval: "Seed.customer_with_orders['email'] == 'email2@mail.ru'"

@@ -46,7 +46,7 @@ func SessionCreate(c web.C, w http.ResponseWriter, r *http.Request) {
     if customer.Token == "" || time.Now().After(customer.TokenTTL) {
         customer.RenewToken()
 
-        if customer.Upsert() != nil {
+        if _, err = customer.Upsert(); err != nil {
             http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
             return
         }
@@ -65,7 +65,8 @@ func SessionDelete(c web.C, w http.ResponseWriter, r *http.Request) {
 
     customer.Token = ""
     customer.TokenTTL = time.Now()
-    if customer.Upsert() != nil {
+
+    if _, err := customer.Upsert(); err != nil {
         http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
         return
     }
