@@ -40,3 +40,8 @@ func Ping(c web.C, w http.ResponseWriter, r *http.Request) {
 
     encoder.Encode(stats)
 }
+
+func Favicon(c web.C, w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "image/x-icon")
+    w.WriteHeader(http.StatusOK)
+}

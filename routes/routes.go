@@ -26,6 +26,9 @@ func Include() {
 	goji.Get( base_url + "/ping", controllers.Ping)
 	goji.Post(base_url + "/session", controllers.SessionCreate)
 
+	goji.Get("/favicon.ico", controllers.Favicon)
+
+
 	admin := web.New()
 
 	goji.Handle(base_url + "/admin/*", admin)
@@ -44,7 +47,7 @@ func Include() {
 	admin.Put(   "/order/:order_id", controllers.AdminOrderUpdate)
 	admin.Delete("/order/:order_id", controllers.AdminOrderDelete)
 
-	admin.Get("/", controllers.AdminApplication)
+	admin.Use(middleware.Static("public", middleware.StaticOptions{SkipLogging: true}))
 
 
 	restricted := web.New()
