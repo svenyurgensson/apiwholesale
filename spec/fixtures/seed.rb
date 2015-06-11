@@ -108,6 +108,10 @@ module Seed extend self
     orders_coll.find(customer_id: customer["_id"]).to_a
   end
 
+  def last_order
+    orders_coll.find.to_a.last
+  end
+
   def customer_with_orders
     customers_coll.find().first
   end

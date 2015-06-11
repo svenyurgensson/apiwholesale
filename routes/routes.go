@@ -33,15 +33,15 @@ func Include() {
 	admin.Use(middleware.SuperSecure)
 	admin.Use(c.Handler)
 
-	admin.Get("/customers", controllers.AdminCustomersList)
-	admin.Post("/customers", controllers.AdminCustomerCreate)
-	admin.Get("/customer/:customer_id", controllers.AdminCustomerView)
-	admin.Put("/customer/:customer_id", controllers.AdminCustomerUpdate)
+	admin.Get(   "/customers",             controllers.AdminCustomersList)
+	admin.Post(  "/customers",             controllers.AdminCustomerCreate)
+	admin.Get(   "/customer/:customer_id", controllers.AdminCustomerView)
+	admin.Put(   "/customer/:customer_id", controllers.AdminCustomerUpdate)
 	admin.Delete("/customer/:customer_id", controllers.AdminCustomerDelete)
 
-	admin.Get("/orders", controllers.AdminOrdersList)
-	admin.Get("/order/:order_id", controllers.AdminOrderView)
-	admin.Put("/order/:order_id", controllers.AdminOrderUpdate)
+	admin.Get(   "/orders",          controllers.AdminOrdersList)
+	admin.Get(   "/order/:order_id", controllers.AdminOrderView)
+	admin.Put(   "/order/:order_id", controllers.AdminOrderUpdate)
 	admin.Delete("/order/:order_id", controllers.AdminOrderDelete)
 
 	admin.Get("/", controllers.AdminApplication)

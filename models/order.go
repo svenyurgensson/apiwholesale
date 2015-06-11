@@ -12,7 +12,7 @@ type Order struct {
     Id        bson.ObjectId  `json:"id,omitempty"          bson:"_id"`
     CreatedAt time.Time      `json:"created_at,omitempty"  bson:"created_at,omitempty"`
     UpdatedAt time.Time      `json:"updated_at,omitempty"  bson:"updated_at,omitempty"`
-    CustomerId bson.ObjectId `json:"-"                     bson:"customer_id,omitempty"`
+    CustomerId bson.ObjectId `json:"customer_id"           bson:"customer_id,omitempty"`
     RawData   interface{}    `json:"raw_data"              bson:"raw_data"`
 }
 
@@ -100,8 +100,25 @@ func GetOrders(q bson.M) ([]Order, error) {
     return orders, err
 }
 
+func GetOrder(q bson.M) (Order, error) {
+    order := Order{}
+    session := s.GetSession()
+    defer session.Close()
+    coll := session.DB(s.DB).C("orders")
+
+    err := coll.Find(q).One(&order)
+
+    return order, err
+}
 
 
+func DeleteOrder(q bson.M) error {
+    session := s.GetSession()
+    defer session.Close()
+    coll := session.DB(s.DB).C("orders")
+
+    return coll.Remove(q)
+}
 
 
 

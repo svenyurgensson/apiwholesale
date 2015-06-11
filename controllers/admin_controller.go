@@ -100,9 +100,9 @@ func AdminCustomerUpdate(c web.C, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cid := bson.ObjectIdHex(resource_id)
+	rid := bson.ObjectIdHex(resource_id)
 
-	presents, error := models.ExistsCustomers(bson.M{"_id": cid})
+	presents, error := models.ExistsCustomers(bson.M{"_id": rid})
 	if error != nil || presents != true {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
@@ -116,7 +116,7 @@ func AdminCustomerUpdate(c web.C, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resource.Id = cid
+	resource.Id = rid
 	_, err = resource.Upsert()
 
 	if err != nil {
@@ -137,15 +137,15 @@ func AdminCustomerDelete(c web.C, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cid := bson.ObjectIdHex(resource_id)
+	rid := bson.ObjectIdHex(resource_id)
 
-	presents, error := models.ExistsCustomers(bson.M{"_id": cid})
+	presents, error := models.ExistsCustomers(bson.M{"_id": rid})
 	if error != nil || presents != true {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
 
-	err := models.DeleteCustomer(bson.M{"_id": cid})
+	err := models.DeleteCustomer(bson.M{"_id": rid})
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -176,24 +176,85 @@ func AdminOrdersList(c web.C, w http.ResponseWriter, r *http.Request) {
 }
 
 func AdminOrderView(c web.C, w http.ResponseWriter, r *http.Request) {
+	resource_id := c.URLParams["order_id"]
+	if ! bson.IsObjectIdHex(resource_id) {
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	resource, error := models.GetOrder(bson.M{"_id": bson.ObjectIdHex(resource_id)})
+	if error != nil {
+		http.Error(w, error.Error(), http.StatusNotFound)
+		return
+	}
+
+	encoder := json.NewEncoder(w)
 	w.Header().Set("Content-Type", "application/json")
-
-
 	w.WriteHeader(http.StatusOK)
+	encoder.Encode(resource)
 }
 
 func AdminOrderUpdate(c web.C, w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
+	resource_id := c.URLParams["order_id"]
+	if ! bson.IsObjectIdHex(resource_id) {
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
 
-	w.WriteHeader(http.StatusOK)
+	rid := bson.ObjectIdHex(resource_id)
+
+	presents, error := models.ExistsOrders(bson.M{"_id": rid})
+	if error != nil || presents != true {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	var resource models.Order
+
+	err := json.NewDecoder(r.Body).Decode(&resource)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	resource.Id = rid
+	err = resource.Upsert()
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func AdminOrderDelete(c web.C, w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
+	resource_id := c.URLParams["order_id"]
+	if ! bson.IsObjectIdHex(resource_id) {
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
 
-	w.WriteHeader(http.StatusOK)
+	rid := bson.ObjectIdHex(resource_id)
+
+	presents, error := models.ExistsOrders(bson.M{"_id": rid})
+	if error != nil || presents != true {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	err := models.DeleteOrder(bson.M{"_id": rid})
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
 
 

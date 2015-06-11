@@ -334,7 +334,7 @@ endpoints:
             code: 200
 
   "admin/customers":
-    description: Admin interface accessing list of Customers
+    description: Admin interface for accessing list of Customers
     params: No params expected
     methods:
       get:
@@ -392,8 +392,8 @@ endpoints:
 
 
   "admin/customer":
-    description: Admin interface access particular Customer
-    params: Expects customer_id in path
+    description: Admin interface for accessing particular Customer
+    params: Expects `customer_id` in path
     methods:
       get:
         -
@@ -469,7 +469,7 @@ endpoints:
             code: 204
 
   "admin/orders":
-    description: Admin interface accessing list of Orders
+    description: Admin interface for accessing list of Orders
     params: No params expected
     methods:
       get:
@@ -486,3 +486,120 @@ endpoints:
             Origin: http://foo.com
           expect:
             code: 200
+      post:
+        -
+          description: 404 Bad request, method unknown
+          headers:
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 404
+      put:
+        -
+          description: 404 Bad request, method unknown
+          headers:
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 404
+      delete:
+        -
+          description: 404 Bad request, method unknown
+          headers:
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 404
+      options:
+        -
+          description: 200 OK Empty response
+          headers:
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 200
+      head:
+        -
+          description: 200 OK Empty response
+          headers:
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 200
+
+  "admin/order":
+    description: Admin interface for accessing particular Order
+    params: Expects `order_id` in path
+    methods:
+      get:
+        -
+          description: 401 Unauthorized when credentials not privided
+          path:
+            eval: "Seed.order_for['_id'].to_s"
+          headers:
+            Origin: http://foo.com
+          expect:
+            code: 401
+        -
+          description: 404 Not Found when authorized but Order not present
+          path: 00780af96465762046000000
+          headers:
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 404
+        -
+          description: 200 OK when authorized and Order presents
+          path:
+            eval: "Seed.order_for['_id'].to_s"
+          headers:
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 200
+      put:
+        -
+          description: 404 Not Found if no given Order found
+          path: 00780af96465762046000000
+          headers:
+            content-type: application/json
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 404
+        -
+          description: Change Order succesfully if given Order presents and valid
+          path:
+            eval: "Seed.last_order['_id'].to_s"
+          headers:
+            content-type: application/json
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          body:
+            json:
+              raw_data:
+                wassap: "Hello!"
+          expect:
+            code: 204
+            eval: "Seed.last_order['raw_data']['wassap'] == 'Hello!'"
+
+      delete:
+        -
+          description: 404 Not Found if no given Order found
+          path: 00780af96465762046000000
+          headers:
+            content-type: application/json
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 404
+        -
+          description: Delete Order succesfully if given Order presents
+          path:
+            eval: "Seed.order_for['_id'].to_s"
+          headers:
+            content-type: application/json
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 204
