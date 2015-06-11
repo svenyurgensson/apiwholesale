@@ -6,7 +6,7 @@ import (
 	"path"
 	"strings"
 	"mime"
-	s "../system"
+//  s "../system"
 )
 
 // StaticOptions is a struct for specifiying configuration options for the goji-static middleware.
@@ -93,15 +93,8 @@ func Static(directory string, options ...StaticOptions) func(http.Handler) http.
 			ext := path.Ext(fs.Name())
 			mt := mime.TypeByExtension(ext)
 
-			s.DEBUG(fs)
-			s.DEBUG(ext)
-			s.DEBUG(mt)
-
-
 			if mt != "" {
 				w.Header().Set("Content-Type", mt)
-			} else {
-			//  w.Header().Set("Content-Type", "application/octet-stream")
 			}
 
 			// if the requested resource is a directory, try to serve the index file
