@@ -16,7 +16,9 @@ func Include() {
 
 
 	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"*"},
+		AllowedOrigins: []string{},
+		AllowedMethods: []string{"GET", "PUT", "POST", "DELETE"},
+		AllowedHeaders: []string{"Origin", "Accept", "Content-Type", "Authorization"},
 		AllowCredentials: true,
 		//Debug: true,
 	})
