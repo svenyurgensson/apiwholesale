@@ -20,3 +20,8 @@ task :seed do
   Seed.fill_docs
 
 end
+
+desc "Starts API in development env"
+task :go do
+  system "go run api_wsc.go"
+end
