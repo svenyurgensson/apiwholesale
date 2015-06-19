@@ -43,12 +43,15 @@ namespace :build do
     system "rm -Rf release/*"
   end
 
-  desc "Copy project files"
+  desc "Copy project files into release"
   task :provision do
-    system "cp -R {doc,public,config,README.md,CHANGELOG.md} release/"
+    mkdir "release", :noop => true
+    %w|doc public config README.md CHANGELOG.md|.map do |f|
+      cp_r f, "release"
+    end
   end
 
-  desc " * * * Build, create and copy project structure"
+  desc " * * * Build, create and copy project structure * * *"
   task :release => [:clean, :linux, :provision]
 
 end
