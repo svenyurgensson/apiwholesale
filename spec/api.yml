@@ -12,8 +12,8 @@ API является веб-сервисом, который позволяет 
 footer: (c) Yury Batenko for alibaba24.ru 2015
 original:
   # what will be printed into  formatted output, your "real" API URL
-  base_url: http://localhost #http://apiwholesale.alibaba24.ru
-  port: 8000
+  base_url: http://apiwholesale.alibaba24.ru
+  port:
 
 # require arbitrary ruby file before starting tests
 require: ./spec/fixtures/seed.rb

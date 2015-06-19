@@ -4,7 +4,7 @@ production:
     hosts:
       - localhost:27017
     options:
-  admin_credentials: admin:admin
+  admin_credentials: admin:lekdUkd_4UU2
 
 development:
   db:
