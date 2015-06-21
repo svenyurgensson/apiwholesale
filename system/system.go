@@ -7,6 +7,7 @@ import (
     "strings"
 
     "github.com/kylelemons/go-gypsy/yaml"
+    "time"
 
     "gopkg.in/mgo.v2"
     //"gopkg.in/mgo.v2/bson"
@@ -44,6 +45,9 @@ func DEBUG(x interface{}) {
 }
 
 func set_working_environment() {
+
+    time.Local = time.UTC
+
     env := flag.String("e", "development", "Environment to run {test, development, production}, default: development")
 
     cmd := os.Args[0]
