@@ -23,7 +23,7 @@ end
 
 desc "Starts API in development env"
 task :go do
-  system "go run api_wsc.go"
+  exec "go run api_wsc.go"
 end
 
 
