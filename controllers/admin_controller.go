@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"encoding/json"
+	"strconv"
 
 	"../models"
 	s "../system"
@@ -162,7 +163,12 @@ func AdminCustomerDelete(c web.C, w http.ResponseWriter, r *http.Request) {
 func AdminOrdersList(c web.C, w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	resources, err := models.GetOrders(bson.M{})
+	limit, el := strconv.Atoi(r.URL.Query().Get("limit"));
+	if (el != nil) { limit = 100 }
+	skip,  es := strconv.Atoi(r.URL.Query().Get("skip"));
+	if (es != nil) { skip = 0 }
+
+	resources, err := models.GetOrders(bson.M{}, skip, limit)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return

@@ -89,13 +89,13 @@ func DeleteCustomerOrder(c Customer, id string) error {
 }
 
 
-func GetOrders(q bson.M) ([]Order, error) {
+func GetOrders(q bson.M, skip, limit int) ([]Order, error) {
     orders := []Order{}
     session := s.GetSession()
     defer session.Close()
     coll := session.DB(s.DB).C("orders")
 
-    err := coll.Find(q).All(&orders)
+    err := coll.Find(q).Limit(limit).Skip(skip).All(&orders)
 
     return orders, err
 }

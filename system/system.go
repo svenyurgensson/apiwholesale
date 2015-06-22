@@ -146,7 +146,6 @@ func Init(){
     load_parse_config()
 
     db_establish_connection()
-
 }
 
 
