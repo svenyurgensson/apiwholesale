@@ -26,6 +26,11 @@ task :go do
   exec "go run api_wsc.go"
 end
 
+desc "Starts API in development env with autorefreshing"
+task :rego do
+  exec "fresh"
+end
+
 
 namespace :build do
   desc "Build linux release"
