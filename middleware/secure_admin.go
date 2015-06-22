@@ -3,8 +3,9 @@ package middleware
 import (
     "net/http"
     "encoding/base64"
+    "fmt"
     "strings"
-    "apiwholesale/system"
+    s "apiwholesale/system"
 
     "github.com/zenazn/goji/web"
 )
@@ -17,13 +18,15 @@ func SuperSecure(c *web.C, h http.Handler) http.Handler {
 
         if !strings.HasPrefix(auth, "Basic ") {
             pleaseAuth(w)
+            s.Log.Err(fmt.Sprintf("[error] admin authorization failed: %v", r))
             return
         }
 
         password, err := base64.StdEncoding.DecodeString(auth[6:])
 
-        if err != nil || string(password) != system.AdminCredentials {
+        if err != nil || string(password) != s.AdminCredentials {
             pleaseAuth(w)
+            s.Log.Err(fmt.Sprintf("[error] admin authorization failed: %v", r))
             return
         }
 

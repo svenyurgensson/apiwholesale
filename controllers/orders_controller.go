@@ -5,6 +5,7 @@ import (
     "encoding/json"
 
     "apiwholesale/models"
+    "fmt"
 
     s "apiwholesale/system"
 
@@ -19,6 +20,7 @@ func OrdersList(c web.C, w http.ResponseWriter, r *http.Request) {
     resources, err := models.GetCustomerOrders(&customer)
     if err != nil {
         http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+        s.Log.Err(fmt.Sprintf("[error] orders list: %s", err.Error()))
         return
     }
 
@@ -37,6 +39,7 @@ func OrderGet(c web.C, w http.ResponseWriter, r *http.Request) {
 
     if err != nil {
         http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+        s.Log.Err(fmt.Sprintf("[error] order not found: %s", err.Error()))
         return
     }
 
@@ -56,6 +59,7 @@ func OrderCreate(c web.C, w http.ResponseWriter, r *http.Request) {
 
     if err != nil {
         http.Error(w, err.Error(), http.StatusBadRequest)
+        s.Log.Err(fmt.Sprintf("[error] order create: bad format %s", err.Error()))
         return
     }
 
@@ -63,6 +67,7 @@ func OrderCreate(c web.C, w http.ResponseWriter, r *http.Request) {
 
     if err = order.Upsert(); err != nil {
         http.Error(w, err.Error(), http.StatusBadRequest)
+        s.Log.Err(fmt.Sprintf("[error] order create: %s", err.Error()))
         return
     }
 
@@ -77,6 +82,7 @@ func OrderDelete(c web.C, w http.ResponseWriter, r *http.Request) {
 
     if err != nil {
         http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+        s.Log.Err(fmt.Sprintf("[error] order delete: %s", err.Error()))
         return
     }
 
@@ -91,11 +97,13 @@ func OrderUpdate(c web.C, w http.ResponseWriter, r *http.Request) {
     err := json.NewDecoder(r.Body).Decode(&order)
     if err != nil {
         http.Error(w, err.Error(), http.StatusBadRequest)
+        s.Log.Err(fmt.Sprintf("[error] order update: %s", err.Error()))
         return
     }
 
     if ! bson.IsObjectIdHex(order_id) {
         http.Error(w, err.Error(), http.StatusBadRequest)
+        s.Log.Err(fmt.Sprintf("[error] order update: bad order_id"))
         return
     }
 
@@ -105,17 +113,15 @@ func OrderUpdate(c web.C, w http.ResponseWriter, r *http.Request) {
 
     if error != nil || exists == false {
         http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+        s.Log.Err(fmt.Sprintf("[error] order update: %s exists: %t", error.Error(), exists))
         return
     }
 
     if err = order.Upsert(); err != nil {
         http.Error(w, err.Error(), http.StatusBadRequest)
+        s.Log.Err(fmt.Sprintf("[error] order update: %s", err.Error()))
         return
     }
 
     w.WriteHeader(http.StatusOK)
-}
-
-func void() {
-  s.DEBUG("void")
 }

@@ -3,7 +3,7 @@ package controllers
 import (
     "net/http"
     "encoding/json"
-
+    "fmt"
     "time"
 
     s "apiwholesale/system"
@@ -28,11 +28,13 @@ func SessionCreate(c web.C, w http.ResponseWriter, r *http.Request) {
 
     if err != nil {
         http.Error(w, err.Error(), http.StatusBadRequest)
+        s.Log.Err(fmt.Sprintf("[error] session create: %s", err.Error()))
         return
     }
 
     if cred.Email == "" || cred.Password == "" {
         http.Error(w, "Bad request", http.StatusBadRequest)
+        s.Log.Err(fmt.Sprintf("[error] session create: bad credentials %v", cred))
         return
     }
 
@@ -40,6 +42,7 @@ func SessionCreate(c web.C, w http.ResponseWriter, r *http.Request) {
 
     if err != nil {
         http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+        s.Log.Err(fmt.Sprintf("[error] session create: not found  %v, %s", cred, err.Error()))
         return
     }
 
@@ -48,6 +51,7 @@ func SessionCreate(c web.C, w http.ResponseWriter, r *http.Request) {
 
         if _, err = customer.Upsert(); err != nil {
             http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+            s.Log.Err(fmt.Sprintf("[error] session create: token update %s", err.Error()))
             return
         }
     }
@@ -68,12 +72,9 @@ func SessionDelete(c web.C, w http.ResponseWriter, r *http.Request) {
 
     if _, err := customer.Upsert(); err != nil {
         http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+        s.Log.Err(fmt.Sprintf("[error] session delete: %s", err.Error()))
         return
     }
 
     w.WriteHeader(http.StatusNoContent)
-}
-
-func void_session(){
-    s.DEBUG("void")
 }

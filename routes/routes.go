@@ -23,6 +23,8 @@ func Include() {
         //Debug: true,
     })
     goji.Use(c.Handler)
+    goji.Use(m.RequestID)
+    goji.Use(middleware.Logger)
 
 
     goji.Get( base_url + "/ping", controllers.Ping)

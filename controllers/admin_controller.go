@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"encoding/json"
 	"strconv"
+	"fmt"
 
 	"apiwholesale/models"
 	s "apiwholesale/system"
@@ -15,8 +16,6 @@ import (
 
 func AdminApplication(c web.C, w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-
-
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -41,11 +40,13 @@ func AdminCustomersList(c web.C, w http.ResponseWriter, r *http.Request) {
 
 	if response.Total, err = models.GetCustomersCount(bson.M{}); err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		s.Log.Err(fmt.Sprintf("[error] admin customers list: %s", err.Error()))
 		return
 	}
 
 	if response.Resources, err = models.GetCustomers(bson.M{}, skip, limit); err != nil  {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		s.Log.Err(fmt.Sprintf("[error] admin customers list: %s", err.Error()))
 		return
 	}
 
@@ -66,6 +67,7 @@ func AdminCustomerCreate(c web.C, w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		s.Log.Err(fmt.Sprintf("[error] admin customers create: %s", err.Error()))
 		return
 	}
 
@@ -73,6 +75,7 @@ func AdminCustomerCreate(c web.C, w http.ResponseWriter, r *http.Request) {
 	exist, err = models.ExistsCustomers(bson.M{"email": resource.Email})
 	if err != nil || exist == true {
 		http.Error(w, http.StatusText(http.StatusConflict), http.StatusConflict)
+		s.Log.Err(fmt.Sprintf("[error] admin customers create: %s, exists: %t", err.Error(), exist))
 		return
 	}
 
@@ -80,6 +83,7 @@ func AdminCustomerCreate(c web.C, w http.ResponseWriter, r *http.Request) {
 
 	if error != nil {
 		http.Error(w, error.Error(), http.StatusBadRequest)
+		s.Log.Err(fmt.Sprintf("[error] admin customers create: %s", err.Error()))
 		return
 	}
 
@@ -99,6 +103,7 @@ func AdminCustomerView(c web.C, w http.ResponseWriter, r *http.Request) {
 	resource, error := models.GetCustomer(bson.M{"_id": bson.ObjectIdHex(resource_id)})
 	if error != nil {
 		http.Error(w, error.Error(), http.StatusNotFound)
+		s.Log.Err(fmt.Sprintf("[error] admin customers view: %s", error.Error()))
 		return
 	}
 
@@ -114,6 +119,7 @@ func AdminCustomerUpdate(c web.C, w http.ResponseWriter, r *http.Request) {
 	resource_id := c.URLParams["customer_id"]
 	if ! bson.IsObjectIdHex(resource_id) {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		s.Log.Err(fmt.Sprintf("[error] admin customers update: bad customer_id"))
 		return
 	}
 
@@ -122,6 +128,7 @@ func AdminCustomerUpdate(c web.C, w http.ResponseWriter, r *http.Request) {
 	presents, error := models.ExistsCustomers(bson.M{"_id": rid})
 	if error != nil || presents != true {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		s.Log.Err(fmt.Sprintf("[error] admin customers update: %s, presents: %t", error.Error(), presents))
 		return
 	}
 
@@ -130,6 +137,7 @@ func AdminCustomerUpdate(c web.C, w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&resource)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		s.Log.Err(fmt.Sprintf("[error] admin customers update: %s", err.Error()))
 		return
 	}
 
@@ -138,6 +146,7 @@ func AdminCustomerUpdate(c web.C, w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		s.Log.Err(fmt.Sprintf("[error] admin customers update: %s", err.Error()))
 		return
 	}
 
@@ -151,6 +160,7 @@ func AdminCustomerDelete(c web.C, w http.ResponseWriter, r *http.Request) {
 	resource_id := c.URLParams["customer_id"]
 	if ! bson.IsObjectIdHex(resource_id) {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		s.Log.Err(fmt.Sprintf("[error] admin customers delete: bad customer_id"))
 		return
 	}
 
@@ -159,6 +169,7 @@ func AdminCustomerDelete(c web.C, w http.ResponseWriter, r *http.Request) {
 	presents, error := models.ExistsCustomers(bson.M{"_id": rid})
 	if error != nil || presents != true {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		s.Log.Err(fmt.Sprintf("[error] admin customers delete: %s, present: %t", error.Error(), presents))
 		return
 	}
 
@@ -166,6 +177,7 @@ func AdminCustomerDelete(c web.C, w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		s.Log.Err(fmt.Sprintf("[error] admin customers delete: %s", err.Error()))
 		return
 	}
 
@@ -193,11 +205,13 @@ func AdminOrdersList(c web.C, w http.ResponseWriter, r *http.Request) {
 
 	if response.Total, err = models.GetOrdersCount(bson.M{}); err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		s.Log.Err(fmt.Sprintf("[error] admin orders list count: %s", err.Error()))
 		return
 	}
 
 	if response.Resources, err = models.GetOrders(bson.M{}, skip, limit); err != nil  {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		s.Log.Err(fmt.Sprintf("[error] admin orders list: %s", err.Error()))
 		return
 	}
 
@@ -212,12 +226,14 @@ func AdminOrderView(c web.C, w http.ResponseWriter, r *http.Request) {
 	resource_id := c.URLParams["order_id"]
 	if ! bson.IsObjectIdHex(resource_id) {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		s.Log.Err(fmt.Sprintf("[error] admin order: bad order_id"))
 		return
 	}
 
 	resource, error := models.GetOrder(bson.M{"_id": bson.ObjectIdHex(resource_id)})
 	if error != nil {
 		http.Error(w, error.Error(), http.StatusNotFound)
+		s.Log.Err(fmt.Sprintf("[error] admin order: %s", error.Error()))
 		return
 	}
 
@@ -233,6 +249,7 @@ func AdminOrderUpdate(c web.C, w http.ResponseWriter, r *http.Request) {
 	resource_id := c.URLParams["order_id"]
 	if ! bson.IsObjectIdHex(resource_id) {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		s.Log.Err(fmt.Sprintf("[error] admin order update: bad order_id"))
 		return
 	}
 
@@ -241,6 +258,7 @@ func AdminOrderUpdate(c web.C, w http.ResponseWriter, r *http.Request) {
 	presents, error := models.ExistsOrders(bson.M{"_id": rid})
 	if error != nil || presents != true {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		s.Log.Err(fmt.Sprintf("[error] admin order update: %s, exists: %t", error.Error(), presents))
 		return
 	}
 
@@ -257,6 +275,7 @@ func AdminOrderUpdate(c web.C, w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		s.Log.Err(fmt.Sprintf("[error] admin order update: %s", err.Error()))
 		return
 	}
 
@@ -269,6 +288,7 @@ func AdminOrderDelete(c web.C, w http.ResponseWriter, r *http.Request) {
 	resource_id := c.URLParams["order_id"]
 	if ! bson.IsObjectIdHex(resource_id) {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		s.Log.Err(fmt.Sprintf("[error] admin order delete: bad order_id"))
 		return
 	}
 
@@ -277,6 +297,7 @@ func AdminOrderDelete(c web.C, w http.ResponseWriter, r *http.Request) {
 	presents, error := models.ExistsOrders(bson.M{"_id": rid})
 	if error != nil || presents != true {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		s.Log.Err(fmt.Sprintf("[error] admin order delete: %s, exists: %t", error.Error(), presents))
 		return
 	}
 
@@ -284,6 +305,7 @@ func AdminOrderDelete(c web.C, w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		s.Log.Err(fmt.Sprintf("[error] admin order delete: %s", err.Error()))
 		return
 	}
 

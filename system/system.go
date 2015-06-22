@@ -9,6 +9,8 @@ import (
     "github.com/kylelemons/go-gypsy/yaml"
     "time"
 
+    "log/syslog"
+
     "gopkg.in/mgo.v2"
     //"gopkg.in/mgo.v2/bson"
 )
@@ -28,6 +30,8 @@ var (
     Boot_time     string
     Hostname      string
     Env           string
+
+    Log          *syslog.Writer
 
     DB            string
     ConnURL       string
@@ -140,12 +144,22 @@ func db_establish_connection() {
     }
 }
 
+func initLog() {
+    var err error
+    if Log, err = syslog.New(syslog.LOG_INFO|syslog.LOG_ERR|syslog.LOG_LOCAL0, "[apiws]"); err != nil {
+        panic(err)
+    }
+}
+
+
 func Init(){
     set_working_environment()
-
     load_parse_config()
+    initLog()
 
     db_establish_connection()
+
+    Log.Info("Server started")
 }
 
 
