@@ -335,7 +335,9 @@ endpoints:
 
   "admin/customers":
     description: Admin interface for accessing list of Customers
-    params: No params expected
+    params:
+      limit: Limit returning list of records, default is 100, maximum is 500
+      skip:  Skipping first 'skip' records, default is 100
     methods:
       get:
         -
@@ -351,6 +353,48 @@ endpoints:
             Origin: http://foo.com
           expect:
             code: 200
+        -
+          description: Provide 'limit' and 'skip' query params
+          params:
+            limit: 1
+            skip: 1
+          headers:
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 200
+        -
+          description: Error when 'limit' query parameter wrong
+          params:
+            limit: wrong
+            skip: 1
+          headers:
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 400
+        -
+          description: Error when 'limit' query parameter bigger then max limit (500)
+          params:
+            limit: 600
+            skip: 1
+          headers:
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 400
+        -
+          description: Error when query parameter 'limit'=-1
+          params:
+            limit: -1
+            skip: 1
+          headers:
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 400
+
+
       post:
         -
           description: Create Customer succesfully. Return link to created customer
@@ -470,7 +514,9 @@ endpoints:
 
   "admin/orders":
     description: Admin interface for accessing list of Orders
-    params: No params expected
+    params:
+      limit: Limit returning list of records, default is 100, maximum is 500
+      skip:  Skipping first 'skip' records, default is 100
     methods:
       get:
         -
@@ -486,6 +532,46 @@ endpoints:
             Origin: http://foo.com
           expect:
             code: 200
+          description: Provide 'limit' and 'skip' query params
+          params:
+            limit: 1
+            skip: 1
+          headers:
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 200
+        -
+          description: Error when 'limit' query parameter wrong
+          params:
+            limit: wrong
+            skip: 1
+          headers:
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 400
+        -
+          description: Error when 'limit' query parameter bigger then max limit (500)
+          params:
+            limit: 600
+            skip: 1
+          headers:
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 400
+        -
+          description: Error when query parameter 'limit'=-1
+          params:
+            limit: -1
+            skip: 1
+          headers:
+            Authorization: Basic YWRtaW46YWRtaW4=
+            Origin: http://foo.com
+          expect:
+            code: 400
+
       post:
         -
           description: 404 Bad request, method unknown

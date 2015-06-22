@@ -111,9 +111,15 @@ func OrderUpdate(c web.C, w http.ResponseWriter, r *http.Request) {
     order.CustomerId = customer.Id
     exists, error := models.ExistsOrders(bson.M{"customer_id": customer.Id, "_id": order.Id})
 
-    if error != nil || exists == false {
+    if error != nil {
         http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-        s.Log.Err(fmt.Sprintf("[error] order update: %s exists: %t", error.Error(), exists))
+        s.Log.Err(fmt.Sprintf("[error] order update: %s", error.Error()))
+        return
+    }
+
+    if exists == false {
+        http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+        s.Log.Err(fmt.Sprintf("[error] order update: exists: %t", exists))
         return
     }
 

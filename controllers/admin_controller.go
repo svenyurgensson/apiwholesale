@@ -26,8 +26,24 @@ func AdminApplication(c web.C, w http.ResponseWriter, r *http.Request) {
 func AdminCustomersList(c web.C, w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	limit, el := strconv.Atoi(r.URL.Query().Get("limit"));
-	if (el != nil) { limit = 100 }
+	lim := r.URL.Query().Get("limit")
+	if lim == "" {
+		lim = "100"
+	}
+	limit, el := strconv.Atoi(lim);
+	if (el != nil) {
+		e := fmt.Sprintf("[error] admin customers list params: bad limit: '%s'", lim)
+		http.Error(w, e, http.StatusBadRequest)
+		s.Log.Err(e)
+		return
+	}
+	if (limit > 500 || limit < 0) {
+		e := fmt.Sprintf("[error] admin customers list params: limit is wrong (maximum 500, minimum 0) given: '%s'", lim)
+		http.Error(w, e, http.StatusBadRequest)
+		s.Log.Err(e)
+		return
+	}
+
 	skip,  es := strconv.Atoi(r.URL.Query().Get("skip"));
 	if (es != nil) { skip = 0 }
 
@@ -73,9 +89,15 @@ func AdminCustomerCreate(c web.C, w http.ResponseWriter, r *http.Request) {
 
 	var exist bool
 	exist, err = models.ExistsCustomers(bson.M{"email": resource.Email})
-	if err != nil || exist == true {
+	if err != nil {
 		http.Error(w, http.StatusText(http.StatusConflict), http.StatusConflict)
-		s.Log.Err(fmt.Sprintf("[error] admin customers create: %s, exists: %t", err.Error(), exist))
+		s.Log.Err(fmt.Sprintf("[error] admin customers create: %s", err.Error()))
+		return
+	}
+
+	if exist == true {
+		http.Error(w, http.StatusText(http.StatusConflict), http.StatusConflict)
+		s.Log.Err(fmt.Sprintf("[error] admin customers create: exists: %t", exist))
 		return
 	}
 
@@ -126,9 +148,14 @@ func AdminCustomerUpdate(c web.C, w http.ResponseWriter, r *http.Request) {
 	rid := bson.ObjectIdHex(resource_id)
 
 	presents, error := models.ExistsCustomers(bson.M{"_id": rid})
-	if error != nil || presents != true {
+	if error != nil {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-		s.Log.Err(fmt.Sprintf("[error] admin customers update: %s, presents: %t", error.Error(), presents))
+		s.Log.Err(fmt.Sprintf("[error] admin customers update: %s", error.Error()))
+		return
+	}
+	if presents != true {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		s.Log.Err(fmt.Sprintf("[error] admin customers update: presents: %t", presents))
 		return
 	}
 
@@ -167,11 +194,18 @@ func AdminCustomerDelete(c web.C, w http.ResponseWriter, r *http.Request) {
 	rid := bson.ObjectIdHex(resource_id)
 
 	presents, error := models.ExistsCustomers(bson.M{"_id": rid})
-	if error != nil || presents != true {
+	if error != nil {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-		s.Log.Err(fmt.Sprintf("[error] admin customers delete: %s, present: %t", error.Error(), presents))
+		s.Log.Err(fmt.Sprintf("[error] admin customers delete: %s", error.Error()))
 		return
 	}
+	if presents != true {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		s.Log.Err(fmt.Sprintf("[error] admin customers delete:  present: %t", presents))
+		return
+	}
+
+
 
 	err := models.DeleteCustomer(bson.M{"_id": rid})
 
@@ -191,8 +225,24 @@ func AdminCustomerDelete(c web.C, w http.ResponseWriter, r *http.Request) {
 func AdminOrdersList(c web.C, w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	limit, el := strconv.Atoi(r.URL.Query().Get("limit"));
-	if (el != nil) { limit = 100 }
+	lim := r.URL.Query().Get("limit")
+	if lim == "" {
+		lim = "100"
+	}
+	limit, el := strconv.Atoi(lim);
+	if (el != nil) {
+		e := fmt.Sprintf("[error] admin orders list params: bad limit: '%s'", lim)
+		http.Error(w, e, http.StatusBadRequest)
+		s.Log.Err(e)
+		return
+	}
+	if (limit > 500 || limit < 0) {
+		e := fmt.Sprintf("[error] admin orders list params: limit is wrong (maximum 500, minimum 0) given: '%s'", lim)
+		http.Error(w, e, http.StatusBadRequest)
+		s.Log.Err(e)
+		return
+	}
+
 	skip,  es := strconv.Atoi(r.URL.Query().Get("skip"));
 	if (es != nil) { skip = 0 }
 
@@ -256,9 +306,14 @@ func AdminOrderUpdate(c web.C, w http.ResponseWriter, r *http.Request) {
 	rid := bson.ObjectIdHex(resource_id)
 
 	presents, error := models.ExistsOrders(bson.M{"_id": rid})
-	if error != nil || presents != true {
+	if error != nil {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-		s.Log.Err(fmt.Sprintf("[error] admin order update: %s, exists: %t", error.Error(), presents))
+		s.Log.Err(fmt.Sprintf("[error] admin order update: %s", error.Error()))
+		return
+	}
+	if presents != true {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		s.Log.Err(fmt.Sprintf("[error] admin order update: exists: %t",  presents))
 		return
 	}
 
@@ -295,9 +350,15 @@ func AdminOrderDelete(c web.C, w http.ResponseWriter, r *http.Request) {
 	rid := bson.ObjectIdHex(resource_id)
 
 	presents, error := models.ExistsOrders(bson.M{"_id": rid})
-	if error != nil || presents != true {
+	if error != nil {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-		s.Log.Err(fmt.Sprintf("[error] admin order delete: %s, exists: %t", error.Error(), presents))
+		s.Log.Err(fmt.Sprintf("[error] admin order delete: %s", error.Error()))
+		return
+	}
+
+	if presents != true {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		s.Log.Err(fmt.Sprintf("[error] admin order delete: exists: %t", presents))
 		return
 	}
 
