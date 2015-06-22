@@ -27,8 +27,24 @@ func AdminApplication(c web.C, w http.ResponseWriter, r *http.Request) {
 func AdminCustomersList(c web.C, w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	resources, err := models.GetCustomers()
-	if err != nil {
+	limit, el := strconv.Atoi(r.URL.Query().Get("limit"));
+	if (el != nil) { limit = 100 }
+	skip,  es := strconv.Atoi(r.URL.Query().Get("skip"));
+	if (es != nil) { skip = 0 }
+
+	type Response struct {
+		Total int                      `json:"total"`
+		Resources []models.Customer    `json:"resources"`
+	}
+	var response Response
+	var err error
+
+	if response.Total, err = models.GetCustomersCount(bson.M{}); err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	if response.Resources, err = models.GetCustomers(bson.M{}, skip, limit); err != nil  {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
@@ -37,7 +53,7 @@ func AdminCustomersList(c web.C, w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
-	encoder.Encode(resources)
+	encoder.Encode(response)
 }
 
 
@@ -168,8 +184,19 @@ func AdminOrdersList(c web.C, w http.ResponseWriter, r *http.Request) {
 	skip,  es := strconv.Atoi(r.URL.Query().Get("skip"));
 	if (es != nil) { skip = 0 }
 
-	resources, err := models.GetOrders(bson.M{}, skip, limit)
-	if err != nil {
+	type Response struct {
+		Total int                   `json:"total"`
+		Resources []models.Order    `json:"resources"`
+	}
+	var response Response
+	var err error
+
+	if response.Total, err = models.GetOrdersCount(bson.M{}); err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	if response.Resources, err = models.GetOrders(bson.M{}, skip, limit); err != nil  {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
@@ -178,7 +205,7 @@ func AdminOrdersList(c web.C, w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
-	encoder.Encode(resources)
+	encoder.Encode(response)
 }
 
 func AdminOrderView(c web.C, w http.ResponseWriter, r *http.Request) {

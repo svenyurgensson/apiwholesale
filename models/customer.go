@@ -114,14 +114,22 @@ func GetCustomerByCredentials(email string, password string) (Customer, error) {
 	return result, err
 }
 
+func GetCustomersCount(q bson.M) (int, error) {
+	session := s.GetSession()
+	defer session.Close()
+	coll := session.DB(s.DB).C("customers")
 
-func GetCustomers() ([]Customer, error) {
+	result, err := coll.Find(q).Count()
+	return result, err
+}
+
+func GetCustomers(q bson.M, skip, limit int) ([]Customer, error) {
 	session := s.GetSession()
 	defer session.Close()
 	coll := session.DB(s.DB).C("customers")
 
 	result := []Customer{}
-	err := coll.Find(bson.M{}).All(&result)
+	err := coll.Find(q).Limit(limit).Skip(skip).All(&result)
 
 	return result, err
 }

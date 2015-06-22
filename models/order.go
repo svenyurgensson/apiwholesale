@@ -89,16 +89,26 @@ func DeleteCustomerOrder(c Customer, id string) error {
     return coll.Remove(bson.M{"customer_id": c.Id, "_id": bson.ObjectIdHex(id)})
 }
 
-
-func GetOrders(q bson.M, skip, limit int) ([]Order, error) {
-    orders := []Order{}
+func GetOrdersCount(q bson.M) (int, error) {
     session := s.GetSession()
     defer session.Close()
     coll := session.DB(s.DB).C("orders")
 
-    err := coll.Find(q).Limit(limit).Skip(skip).All(&orders)
+    result, err := coll.Find(q).Count()
+    return result, err
+}
 
-    return orders, err
+
+
+func GetOrders(q bson.M, skip, limit int) ([]Order, error) {
+    session := s.GetSession()
+    defer session.Close()
+    coll := session.DB(s.DB).C("orders")
+
+    result := []Order{}
+    err := coll.Find(q).Limit(limit).Skip(skip).All(&result)
+
+    return result, err
 }
 
 func GetOrder(q bson.M) (Order, error) {
