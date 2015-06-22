@@ -8,7 +8,7 @@ import (
 	str "strings"
 	"errors"
 
-	s "../system"
+	s "apiwholesale/system"
 	"gopkg.in/mgo.v2/bson"
 )
 

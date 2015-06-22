@@ -4,7 +4,7 @@ import (
     "net/http"
     "encoding/base64"
     "strings"
-    "../system"
+    "apiwholesale/system"
 
     "github.com/zenazn/goji/web"
 )

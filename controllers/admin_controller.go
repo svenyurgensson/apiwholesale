@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"strconv"
 
-	"../models"
-	s "../system"
+	"apiwholesale/models"
+	s "apiwholesale/system"
 
 	"gopkg.in/mgo.v2/bson"
 	"github.com/zenazn/goji/web"

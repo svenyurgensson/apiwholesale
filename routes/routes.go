@@ -1,13 +1,13 @@
 package routes
 
 import (
-    "../controllers"
-    "../system"
-    "../middleware"
+    "apiwholesale/controllers"
+    "apiwholesale/system"
+    "apiwholesale/middleware"
     "net/http"
     "github.com/zenazn/goji"
     "github.com/zenazn/goji/web"
-    m "github.com/zenazn/goji/web/middleware"
+  m "github.com/zenazn/goji/web/middleware"
     "github.com/rs/cors"
 )
 

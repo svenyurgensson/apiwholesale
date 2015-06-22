@@ -4,9 +4,9 @@ import (
     "net/http"
     "encoding/json"
 
-    "../models"
+    "apiwholesale/models"
 
-    s "../system"
+    s "apiwholesale/system"
 
     "gopkg.in/mgo.v2/bson"
     "github.com/zenazn/goji/web"

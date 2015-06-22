@@ -6,9 +6,9 @@ import (
 
     "time"
 
-    s "../system"
+    s "apiwholesale/system"
 
-    "../models"
+    "apiwholesale/models"
     "github.com/zenazn/goji/web"
 )
 

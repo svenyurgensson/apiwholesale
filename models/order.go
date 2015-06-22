@@ -1,10 +1,11 @@
 package models
 
 import (
-    s "../system"
-
     "errors"
     "time"
+
+    s "apiwholesale/system"
+
     "gopkg.in/mgo.v2/bson"
 )
 

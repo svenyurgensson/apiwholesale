@@ -3,7 +3,7 @@ package controllers
 import (
     "encoding/json"
     "net/http"
-    "../system"
+    "apiwholesale/system"
 
     "github.com/zenazn/goji/web"
 //    "gopkg.in/mgo.v2"

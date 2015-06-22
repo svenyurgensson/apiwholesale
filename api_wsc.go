@@ -5,8 +5,8 @@ import (
     "os"
     "time"
 
-    "./system"
-    "./routes"
+    "apiwholesale/system"
+    "apiwholesale/routes"
 
     "github.com/zenazn/goji"
 )

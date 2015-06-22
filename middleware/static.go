@@ -6,7 +6,7 @@ import (
 	"path"
 	"strings"
 	"mime"
-//  s "../system"
+	//  s "apiwholesale/system"
 )
 
 // StaticOptions is a struct for specifiying configuration options for the goji-static middleware.

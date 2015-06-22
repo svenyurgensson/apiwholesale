@@ -5,7 +5,7 @@ import (
 	"errors"
 	str "strings"
 
-	"../models"
+	"apiwholesale/models"
 
 	"github.com/zenazn/goji/web"
 )
