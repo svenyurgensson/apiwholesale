@@ -33,6 +33,9 @@ var (
 
     Log          *syslog.Writer
 
+    RequestsTotal  int = 0
+    RequestsFailed int = 0
+
     DB            string
     ConnURL       string
     ConnOptions   string
@@ -142,6 +145,9 @@ func db_establish_connection() {
     if err != nil {
         panic(err)
     }
+
+    mgo.SetStats(true)
+
 }
 
 func initLog() {

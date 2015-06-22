@@ -33,6 +33,8 @@ func Logger(c *web.C, h http.Handler) http.Handler {
 
 		lw := mutil.WrapWriter(w)
 
+		s.RequestsTotal += 1
+
 		t1 := time.Now()
 		h.ServeHTTP(lw, r)
 
@@ -73,6 +75,10 @@ func printEnd(reqID string, w mutil.WriterProxy, dt time.Duration) {
 	fmt.Fprintf(&buf, "%03d", status)
 	buf.WriteString(" in ")
 	fmt.Fprintf(&buf, "%s", dt)
+
+	if status > 399 {
+		s.RequestsFailed += 1
+	}
 
 	s.Log.Info(buf.String())
 }
