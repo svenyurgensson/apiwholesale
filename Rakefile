@@ -8,7 +8,12 @@ rescue Gem::LoadError
 end
 
 
-task default: :seed
+task default: :test
+
+desc "Run disco API specs and docs generator"
+task :test do
+  exec "disco"
+end
 
 
 desc "Clean db and make seed of some data"
