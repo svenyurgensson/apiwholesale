@@ -109,7 +109,7 @@ func OrderUpdate(c web.C, w http.ResponseWriter, r *http.Request) {
 
     order.Id = bson.ObjectIdHex(order_id)
     order.CustomerId = customer.Id
-    exists, error := models.ExistsOrders(bson.M{"customer_id": customer.Id, "_id": order.Id})
+    exists, error := models.ExistsOrders(bson.M{"customerId": customer.Id, "_id": order.Id})
 
     if error != nil {
         http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)

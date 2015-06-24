@@ -116,7 +116,7 @@ endpoints:
             Origin: http://foo.com
           body:
             json:
-              raw_data:
+              rawData:
                 something: new
                 here: will be converted to json
           expect:
@@ -207,7 +207,7 @@ endpoints:
             Origin: http://foo.com
           body:
             json:
-              raw_data:
+              rawData:
                 something: new
                 here: will be converted to json
           expect:
@@ -663,11 +663,11 @@ endpoints:
             Origin: http://foo.com
           body:
             json:
-              raw_data:
+              rawData:
                 wassap: "Hello!"
           expect:
             code: 204
-            eval: "Seed.last_order['raw_data']['wassap'] == 'Hello!'"
+            eval: "Seed.last_order['rawData']['wassap'] == 'Hello!'"
 
       delete:
         -

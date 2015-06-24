@@ -18,13 +18,13 @@ type (
 		 Email    string        `json:"email"    bson:"email"`
 		 Password string        `json:"password" bson:"password"`
 		 Token    string        `json:"token"    bson:"token"`
-		 TokenTTL time.Time     `json:"tokenTtl" bson:"tokenTtl"`
+		 TokenTTL time.Time     `json:"tokenTTL" bson:"tokenTTL"`
 
-		 CreatedAt time.Time    `json:"created_at,omitempty"  bson:"created_at,omitempty"`
-		 UpdatedAt time.Time    `json:"updated_at,omitempty"  bson:"updated_at,omitempty"`
-		 LastSeenAt time.Time   `json:"lastSeen_at,omitempty"  bson:"lastSeen_at,omitempty"`
+		 CreatedAt  time.Time   `json:"createdAt,omitempty"  bson:"createdAt,omitempty"`
+		 UpdatedAt  time.Time   `json:"updatedAt,omitempty"  bson:"updatedAt,omitempty"`
+		 LastSeenAt time.Time   `json:"lastSeenAt,omitempty" bson:"lastSeenAt,omitempty"`
 
-		 RawData   interface{}  `json:"raw_data"  bson:"raw_data"`
+		 RawData   interface{}  `json:"rawData"  bson:"rawData"`
 	 }
 )
 

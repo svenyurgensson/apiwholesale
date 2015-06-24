@@ -45,11 +45,11 @@ module Seed extend self
           token: "simple-token",
           tokenTTL: Time.now + 10 * 24 * 3600,
 
-          created_at: Time.now - 10000,
-          updated_at: Time.now - 8000,
-          lastSeen_at: Time.now,
+          createdAt: Time.now - 10000,
+          updatedAt: Time.now - 8000,
+          lastSeenAt: Time.now,
 
-          raw_data: {},
+          rawData: {},
         },
         {
           email: "email@google.com",
@@ -57,11 +57,11 @@ module Seed extend self
           token: nil,
           tokenTTL: nil,
 
-          created_at: Time.now - 6000,
-          updated_at: Time.now - 3000,
-          lastSeen_at: Time.now - 1000 ,
+          createdAt: Time.now - 6000,
+          updatedAt: Time.now - 3000,
+          lastSeenAt: Time.now - 1000 ,
 
-          raw_data: {},
+          rawData: {},
         },
       ])
   end
@@ -74,16 +74,16 @@ module Seed extend self
     orders_coll.insert_many(
       [
         {
-          created_at: Time.now,
-          updated_at: Time.now,
-          customer_id: c["_id"],
-          raw_data: "huevert"
+          createdAt: Time.now,
+          updatedAt: Time.now,
+          customerId: c["_id"],
+          rawData: {some: "complex", data: "to store"}
         },
         {
-          created_at: Time.now - 10000,
-          updated_at: Time.now - 8000,
-          customer_id: c["_id"],
-          raw_data: "BADABOOOM!"
+          createdAt: Time.now - 10000,
+          updatedAt: Time.now - 8000,
+          customerId: c["_id"],
+          rawData: "BADABOOOM!"
         }
       ])
   end
@@ -101,11 +101,11 @@ module Seed extend self
 
 
   def order_for(customer = customer_with_orders)
-    orders_coll.find(customer_id: customer["_id"]).first
+    orders_coll.find(customerId: customer["_id"]).first
   end
 
   def orders_for(customer = customer_with_orders)
-    orders_coll.find(customer_id: customer["_id"]).to_a
+    orders_coll.find(customerId: customer["_id"]).to_a
   end
 
   def last_order

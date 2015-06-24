@@ -11,10 +11,10 @@ import (
 
 type Order struct {
     Id        bson.ObjectId  `json:"id,omitempty"          bson:"_id"`
-    CreatedAt time.Time      `json:"created_at,omitempty"  bson:"created_at,omitempty"`
-    UpdatedAt time.Time      `json:"updated_at,omitempty"  bson:"updated_at,omitempty"`
-    CustomerId bson.ObjectId `json:"customer_id"           bson:"customer_id,omitempty"`
-    RawData   interface{}    `json:"raw_data"              bson:"raw_data"`
+    CreatedAt time.Time      `json:"createdAt,omitempty"  bson:"createdAt,omitempty"`
+    UpdatedAt time.Time      `json:"updatedAt,omitempty"  bson:"updatedAt,omitempty"`
+    CustomerId bson.ObjectId `json:"customerId"           bson:"customerId,omitempty"`
+    RawData   interface{}    `json:"rawData"              bson:"rawData"`
 }
 
 
@@ -61,7 +61,7 @@ func GetCustomerOrder(c Customer, id string) (Order, error) {
         return order, errors.New("Wrong order id format")
     }
 
-    err := coll.Find(bson.M{"customer_id": c.Id, "_id": bson.ObjectIdHex(id)}).One(&order)
+    err := coll.Find(bson.M{"customerId": c.Id, "_id": bson.ObjectIdHex(id)}).One(&order)
 
     return order, err
 }
@@ -72,7 +72,7 @@ func GetCustomerOrders(c *Customer) ([]Order, error) {
     defer session.Close()
     coll := session.DB(s.DB).C("orders")
 
-    err := coll.Find(bson.M{"customer_id": c.Id}).All(&orders)
+    err := coll.Find(bson.M{"customerId": c.Id}).All(&orders)
 
     return orders, err
 }
@@ -86,7 +86,7 @@ func DeleteCustomerOrder(c Customer, id string) error {
         return errors.New("Wrong order id format")
     }
 
-    return coll.Remove(bson.M{"customer_id": c.Id, "_id": bson.ObjectIdHex(id)})
+    return coll.Remove(bson.M{"customerId": c.Id, "_id": bson.ObjectIdHex(id)})
 }
 
 func GetOrdersCount(q bson.M) (int, error) {
