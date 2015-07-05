@@ -9,12 +9,15 @@
 
 base_url=http://apiwholesale.alibaba24.ru
 
+Мониторинговая точка входа:
+
+    /v1/ping
+
 CustomerAPI точки входа (endpoints)
 
-    base_url + "/v1/session"
-    base_url + "/v1/order"
-    base_url + "/v1/orders"
-    base_url + "/v1/ping"
+    /v1/session
+    /v1/order
+    /v1/orders
 
 Операции:
 
@@ -38,8 +41,8 @@ Headers:
 
 POST /v1/session
 {
-login: email,
-password: password
+    email: email,
+    password: password
 }
 
 -->
@@ -51,7 +54,7 @@ X-Token-TTL: 3600 (1 hour)
 
 Body:
 {
-token: "...long..token string..."
+    token: "...long..token string..."
 }
 
 
@@ -100,20 +103,23 @@ memory: "",
 
 ## Быстрый старт работы над этим проектом
 
-Сервис написан на языке программировани golang ver >= 1.3
+Сервис написан на языке программирования golang ver >= 1.3
 Использует базу данных mongodb для сохранения результатов.
 Использован веб фреймворк https://github.com/zenazn/goji
 Драйвер для mongodb http://godoc.org/labix.org/v2/mgo
 
-Для запусков тестов необходимо, чтобы в PATH был доступен файл disco.rb (disco)
+Для запусков тестов необходимо, чтобы в PATH был доступен файл `disco.rb` (disco)
+Все спецификации для тестов написаны в `spec/api.yml` файле
+
 тесты запускаются:
 
-%application root%> go run api_wsc.go
+    go run api_wsc.go
+или для уже скомпилированного проекта, находясь в директории проекта
 
-или для уже скомпилированного проекта
+    ./api_wsc
+и затем в директории проекта запустить
 
-%application root%> ./api_wsc
-%application root%> disco
+    disco
 
 результатом выполнения тестов будет файл doc/index.html который содержит примеры обращения к
 API и ответы сервиса
@@ -122,23 +128,23 @@ API и ответы сервиса
 production, test
 Для этого необходимо указать базу данных нужного окружения перед запуском disco
 
-API_DB=apiwholesale_test disco
+    API_DB=apiwholesale_test disco
 
 Сам сервис API тоже необходимо запустить в нужном окружении:
 
-./api_wsc -e test
+    ./api_wsc -e test
 
 В процессе отладки и изменения спецификаций API а также для добавления новых тестов необходимо
 вносить изменения в файл спецификации spec/api.yml поскольку он используется при работе
 программы disco
 
 Возможно потребуется изучить и внести изменения в скрипт для первоначального засевания базы данных
-который расположен в spec/fixtures/seed.rb
+который расположен в `spec/fixtures/seed.rb`
 
-Для быстрой разработки можено использовать проект [fresh](https://github.com/pilu/fresh)
+Для быстрой разработки очень удобно использовать проект [fresh](https://github.com/pilu/fresh)
 Он будет компилировать проект после каждого изменения и перестартовать его
 
-
+    fresh api_wsc.go
 
 ## Инсталляция и деплой
 
@@ -162,14 +168,15 @@ API_DB=apiwholesale_test disco
 
 ## Разработчики и участники
 
-Батенко Юрий, jurbat@gmail.com, https://github.com/svenyurgensson
+* Батенко Юрий, jurbat@gmail.com, https://github.com/svenyurgensson
 
 
-## README presentation
-[Readme Driven Development](http://www.slideshare.net/maetl/readme-driven-development-12783652)
+## README Дополнительная информация для прочтения
+
+* [Readme Driven Development](http://www.slideshare.net/maetl/readme-driven-development-12783652)
 
 
-### mgo
+### Mgo
 I have yet to write a service that would keep a connection alive and
 handle reconnecting. What's the best practice for this in Go and mgo / other engines?
 
