@@ -3,32 +3,44 @@ package controllers
 import (
 	"net/http"
 	"encoding/json"
+	"time"
+	"fmt"
 
-	//"apiwholesale/models"
+	"apiwholesale/models"
 
-	// s "apiwholesale/system"
+	s "apiwholesale/system"
 
-	// "gopkg.in/mgo.v2/bson"
+	//"gopkg.in/mgo.v2/bson"
 	"github.com/zenazn/goji/web"
 )
 
 type MyMessages struct {
-	Global   []string `json:"global"`
-	Personal []string `json:"personal"`
+	Multicast []string `json:"multicast"`
+	Personal  []string `json:"personal"`
 }
 
 type MyResponse struct{
 	Rate     float64    `json:"rate"`
+	RateAt   time.Time  `json:"rateAt"`
 	Messages MyMessages `json:"messages"`
 }
 
 func Me(c web.C, w http.ResponseWriter, r *http.Request) {
 	//customer := c.Env["auth_customer"].(models.Customer)
 
+	rate, err := models.GetLatestRate()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusServiceUnavailable)
+		s.Log.Err(fmt.Sprintf("[error] GetLatestRate: %s", err.Error()))
+		return
+	}
+
+
 	resource := &MyResponse{
-		Rate: 8.32,
+		Rate: rate.Rate,
+		RateAt: rate.CreatedAt,
 		Messages: MyMessages{
-			Global:   []string{"hello"},
+			Multicast:   []string{"hello"},
 			Personal: []string{"world"},
 		},
 	}

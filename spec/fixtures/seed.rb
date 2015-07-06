@@ -9,6 +9,15 @@ $client = Mongo::Client.new([ '127.0.0.1:27017' ], database: test_db, connect: :
 
 module Seed extend self
 
+  def currencyRates_coll
+    $client[:currencyRates]
+  end
+
+  def messages_coll
+    $client[:messages]
+  end
+
+
   def orders_coll
     $client[:orders]
   end
@@ -27,9 +36,21 @@ module Seed extend self
     customers_coll.drop
   end
 
+  def clear_rates
+    log "... clear currencyRates"
+    currencyRates_coll.drop
+  end
+
+  def clear_messages
+    log "... clear messages"
+    messages_coll.drop
+  end
+
   def clear_all
     clear_customers
     clear_orders
+    clear_rates
+    clear_messages
   end
 
 
@@ -88,9 +109,38 @@ module Seed extend self
       ])
   end
 
+
+  def insert_currencies
+    log "... inserting currencies"
+    maybe_create_collection(:currencyRates)
+    currencyRates_coll.insert_many(
+      [
+        { rate: 8.92, createdAt: Time.now - 1000 },
+        { rate: 9.02, createdAt: Time.now - 12000 },
+      ])
+  end
+
+  def insert_messages
+    log "... inserting messages"
+    maybe_create_collection(:messages)
+
+    custId = customer_with_orders["_id"]
+
+    messages_coll.insert_many(
+      [
+        {type: 'multicast', message: "Hello, all!", createdAt: Time.now, producerId: nil},
+        {type: 'direct', message: "Hello, direct!", createdAt: Time.now - 10000, producerId: nil, recipientId: custId}
+      ]
+    )
+
+  end
+
+
   def fill_docs
     insert_customers
     insert_orders
+    insert_currencies
+    insert_messages
   end
 
   def maybe_create_collection(name)
@@ -98,7 +148,6 @@ module Seed extend self
       $client[name.to_sym].create
     end
   end
-
 
   def order_for(customer = customer_with_orders)
     orders_coll.find(customerId: customer["_id"]).first
@@ -118,7 +167,7 @@ module Seed extend self
 
 
   def log(txt)
-    # puts txt
+    puts txt if ENV['LOG_EN']
   end
 
 
