@@ -20,10 +20,9 @@ desc "Clean db and make seed of some data"
 task :seed do
   require_relative 'spec/fixtures/seed'
 
+  ENV["LOG_SEED"] = "yes"
   Seed.clear_all
-
   Seed.fill_docs
-
 end
 
 desc "Starts API in development env"

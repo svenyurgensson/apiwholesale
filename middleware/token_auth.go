@@ -42,6 +42,15 @@ func TokenAuth(c *web.C, h http.Handler) http.Handler {
 
 		c.Env["auth_customer"] = customer
 
+		// session := s.GetSession()
+		// defer session.Close()
+		// coll := session.DB(s.DB).C("customers")
+		// c.Env["session"]    = session
+		// c.Env["collection"] = coll
+
+		// Update lastSeenAt field to current time
+		customer.RenewLastSeen()
+
 		h.ServeHTTP(w, r)
 	}
 	return http.HandlerFunc(fn)

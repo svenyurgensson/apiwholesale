@@ -167,7 +167,7 @@ module Seed extend self
 
 
   def log(txt)
-    puts txt if ENV['LOG_EN']
+    puts txt if ENV['LOG_SEED']
   end
 
 

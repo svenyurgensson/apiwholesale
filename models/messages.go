@@ -25,7 +25,7 @@ func GetMulticastMessagesSince(timestamp time.Time) ([]Message, error) {
 
 	result := []Message{}
 
-	err := coll.Find(bson.M{"type": "multicast"}).
+	err := coll.Find(bson.M{"type": "multicast", "createdAt": bson.M{"$gte": timestamp}}).
 		Sort("CreatedAt").
 		Select(bson.M{"_id": 1, "message": 1, "createdAt": 1}).
 		Limit(20).
@@ -34,14 +34,14 @@ func GetMulticastMessagesSince(timestamp time.Time) ([]Message, error) {
 	return result, err
 }
 
-func GetDirectMessagesSince(c *Customer, timestamp time.Time) ([]Message, error) {
+func GetDirectMessagesSince(c Customer, timestamp time.Time) ([]Message, error) {
 	session := s.GetSession()
 	defer session.Close()
 	coll := session.DB(s.DB).C("messages")
 
 	result := []Message{}
 
-	err := coll.Find(bson.M{"type": "direct", "recipientId": c.Id}).
+	err := coll.Find(bson.M{"type": "direct", "recipientId": c.Id, "createdAt": bson.M{"$gte": timestamp}}).
 		Sort("CreatedAt").
 		Select(bson.M{"_id": 1, "message": 1, "createdAt": 1}).
 		Limit(20).

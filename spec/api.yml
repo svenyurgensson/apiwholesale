@@ -233,10 +233,20 @@ endpoints:
 
   me:
     description: Returns valuable info for current customer
-    params: no params expect
+    params:
+      since: DateTime js format(RFC3339) return data since given moment
     methods:
       get:
         - description: When token valid returns personal info
+          headers:
+            Authorization: "token: simple-token"
+            Origin: http://foo.com
+          expect:
+            code: 200
+
+        - description: When token valid and given parameter returns personal info
+          params:
+            since: <%= (Time.now - 1000).to_datetime.rfc3339.to_s %>
           headers:
             Authorization: "token: simple-token"
             Origin: http://foo.com

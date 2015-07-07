@@ -28,6 +28,14 @@ type (
 	 }
 )
 
+func (c *Customer) RenewLastSeen() {
+	session := s.GetSession()
+	defer session.Close()
+	coll := session.DB(s.DB).C("customers")
+
+	coll.Update(bson.M{"_id": c.Id}, bson.M{"$currentDate": bson.M{"lastSeenAt": true}})
+}
+
 func (c *Customer) RenewToken() string {
 	uuid := make([]byte, 16)
 	n, err := io.ReadFull(rand.Reader, uuid)

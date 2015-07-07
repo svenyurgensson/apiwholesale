@@ -26,7 +26,12 @@ type MyResponse struct{
 }
 
 func Me(c web.C, w http.ResponseWriter, r *http.Request) {
-	//customer := c.Env["auth_customer"].(models.Customer)
+	customer := c.Env["auth_customer"].(models.Customer)
+
+	since, e := time.Parse(time.RFC3339, c.URLParams["since"])
+	if e != nil {
+		since = time.Now().AddDate(0, 0, -1)
+	}
 
 	rate, err := models.GetLatestRate()
 	if err != nil {
@@ -35,13 +40,33 @@ func Me(c web.C, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var glob_messages []string
+	var pers_messages []string
+
+	gm, err1 := models.GetMulticastMessagesSince(since)
+	if err1 != nil {
+		s.Log.Err(fmt.Sprintf("[error] GetMulticastMessagesSince: %s", err.Error()))
+	} else {
+		for _, c := range gm {
+			glob_messages = append(glob_messages, fmt.Sprintf("%s : %s", c.CreatedAt.Format(time.RFC3339), c.Message))
+		}
+	}
+
+	pm, err2 := models.GetDirectMessagesSince(customer, since)
+	if err2 != nil {
+		s.Log.Err(fmt.Sprintf("[error] GetPersonalMessagesSince: %s", err.Error()))
+	} else {
+		for _, c := range pm {
+			pers_messages = append(pers_messages, fmt.Sprintf("%s : %s", c.CreatedAt.Format(time.RFC3339), c.Message))
+		}
+	}
 
 	resource := &MyResponse{
 		Rate: rate.Rate,
 		RateAt: rate.CreatedAt,
 		Messages: MyMessages{
-			Multicast:   []string{"hello"},
-			Personal: []string{"world"},
+			Multicast: glob_messages,
+			Personal:  pers_messages,
 		},
 	}
 
