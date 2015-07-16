@@ -18,9 +18,10 @@ end
 
 desc "Clean db and make seed of some data"
 task :seed do
+  ENV["API_DB"]   = "ali24_dev" unless ENV["API_DB"]
+  ENV["LOG_SEED"] = "yes"
   require_relative 'spec/fixtures/seed'
 
-  ENV["LOG_SEED"] = "yes"
   Seed.clear_all
   Seed.fill_docs
 end
@@ -28,6 +29,11 @@ end
 desc "Starts API in development env"
 task :go do
   exec "go run api_wsc.go"
+end
+
+desc "Starts API in test env"
+task :got do
+  exec "go run api_wsc.go -e test"
 end
 
 desc "Starts API in development env with autorefreshing"

@@ -1,10 +1,10 @@
+# coding: utf-8
 require "mongo"
 
-test_db =  ENV["API_DB"] ||  "apiwholesale_dev"
+db =  ENV["API_DB"] ||  "ali24_test"
 
 Mongo::Logger.logger.level =  3
-
-$client = Mongo::Client.new([ '127.0.0.1:27017' ], database: test_db, connect: :direct)
+$client = Mongo::Client.new([ '127.0.0.1:27017' ], database: db, connect: :direct)
 
 
 module Seed extend self
@@ -65,11 +65,29 @@ module Seed extend self
           password: "something_simple",
           token: "simple-token",
           tokenTTL: Time.now + 10 * 24 * 3600,
-
+          type: "ordinary",
+          person: {
+            lastName: "Мишина",
+            firstName: "Евдокия",
+            middleName: "Сергеевна",
+            gender: "f",
+            phones: ["79079129912"],
+            dateOfBirthday: Date.parse("2000-1-13"),
+            links: {"vk" => "https://vk.com/evmishina"},
+          },
+          address: {
+            country: "Россия",
+            postIndex: "660069",
+            region: "Красноярский край",
+            city: "Красноярск",
+            street: "Красноярский рабочий 66-12",
+            additional: "",
+          },
+          affiliatedBy: nil,
           createdAt: Time.now - 10000,
           updatedAt: Time.now - 8000,
           lastSeenAt: Time.now,
-
+          description: "",
           rawData: {},
         },
         {
@@ -77,10 +95,30 @@ module Seed extend self
           password: "qUIteHArd_2Crack",
           token: nil,
           tokenTTL: nil,
+          type: "ordinary",
+          person: {
+            lastName: "Велетень",
+            firstName: "Евгения",
+            middleName: "Сергеевна",
+            gender: "f",
+            phones: ["79079129912"],
+            dateOfBirthday: Date.parse("1986-1-13"),
+            links: {"vk" => "https://vk.com/id3245567"},
+          },
+          address: {
+            country: "Россия",
+            postIndex: "660122",
+            region: "Красноярский край",
+            city: "Красноярск",
+            street: "Вагинская 1-44а",
+            additional: "Код подъезда 6617",
+          },
+          affiliatedBy: nil,
 
           createdAt: Time.now - 6000,
           updatedAt: Time.now - 3000,
           lastSeenAt: Time.now - 1000 ,
+          description: "",
 
           rawData: {},
         },
@@ -172,3 +210,6 @@ module Seed extend self
 
 
 end
+
+
+Seed.log("Connected to: #{db}")

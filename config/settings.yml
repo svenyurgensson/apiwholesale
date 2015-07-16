@@ -1,6 +1,6 @@
 production:
   db:
-    name: apiwholesale_prod
+    name: ali24_prod
     hosts:
       - localhost:27017
     options:
@@ -8,7 +8,7 @@ production:
 
 development:
   db:
-    name: apiwholesale_dev
+    name: ali24_dev
     hosts:
       - localhost:27017
     options:
@@ -16,7 +16,7 @@ development:
 
 test:
   db:
-    name: apiwholesale_test
+    name: ali24_test
     hosts:
       - localhost:27017
     options:

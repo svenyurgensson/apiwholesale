@@ -1,4 +1,4 @@
-// mongo localhost:27017/apiwholesale_prod db/indexes.js
+// mongo localhost:27017/ali24_prod db/indexes.js
 
 print("Add indexes to 'orders' collection");
 db.orders.createIndex({customerId: 1});
