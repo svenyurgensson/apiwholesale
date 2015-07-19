@@ -22,7 +22,7 @@ func GetLatestRate() (CurrencyRate, error) {
 
 	result := CurrencyRate{}
 	err := coll.Find(bson.M{}).
-		Sort("CreatedAt").
+		Sort("-createdAt").
 		Select(bson.M{"_id": 1, "rate": 1, "createdAt": 1}).
 		One(&result)
 
