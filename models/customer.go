@@ -24,6 +24,8 @@ type (
 		 UpdatedAt  time.Time   `json:"updatedAt,omitempty"  bson:"updatedAt,omitempty"`
 		 LastSeenAt time.Time   `json:"lastSeenAt,omitempty" bson:"lastSeenAt,omitempty"`
 
+		 Balance int            `json:"balanceTotal,omitempty" bson:"balanceTotal,omitempty"`
+
 		 RawData   interface{}  `json:"rawData"  bson:"rawData"`
 	 }
 )

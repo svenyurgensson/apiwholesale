@@ -20,6 +20,8 @@ type MyMessages struct {
 }
 
 type MyResponse struct{
+	Id       string     `json:"id"`
+	Balance  int        `json:"balanceTotal"`
 	Rate     float64    `json:"rate"`
 	RateAt   time.Time  `json:"rateAt"`
 	Messages MyMessages `json:"messages"`
@@ -62,6 +64,8 @@ func Me(c web.C, w http.ResponseWriter, r *http.Request) {
 	}
 
 	resource := &MyResponse{
+		Id: customer.Id.Hex(),
+		Balance: customer.Balance,
 		Rate: rate.Rate,
 		RateAt: rate.CreatedAt,
 		Messages: MyMessages{
