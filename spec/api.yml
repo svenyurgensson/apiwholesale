@@ -237,6 +237,12 @@ endpoints:
       since: DateTime js format(RFC3339) return data since given moment
     methods:
       get:
+        - description: When no token returns broadcast info
+          headers:
+            Origin: http://foo.com
+          expect:
+            code: 200
+
         - description: When token valid returns personal info
           headers:
             Authorization: "token: simple-token"
@@ -252,20 +258,6 @@ endpoints:
             Origin: http://foo.com
           expect:
             code: 200
-
-        - description: 401 Unauthorized when unknown token
-          headers:
-            Authorization: "token: --not-valid--"
-            Origin: http://foo.com
-          expect:
-            code: 401
-
-        - description: 403 Forbidden when not authenticated
-          headers:
-            Origin: http://foo.com
-          expect:
-            code: 403
-
 
   session:
     description: Create and destroy customer session

@@ -32,6 +32,7 @@ func Include() {
 
     goji.Get("/favicon.ico", controllers.Favicon)
 
+    goji.Get( base_url + "/me", controllers.Me)
 
     admin := web.New()
 
@@ -60,8 +61,6 @@ func Include() {
     restricted.Use(middleware.TokenAuth)
 
     restricted.Delete(base_url + "/session", controllers.SessionDelete)
-
-    restricted.Get( base_url + "/me", controllers.Me)
 
     restricted.Get( base_url + "/orders", controllers.OrdersList)
     restricted.Post(base_url + "/orders", controllers.OrderCreate)

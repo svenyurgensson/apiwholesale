@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"time"
 	"fmt"
+	str "strings"
 
 	"apiwholesale/models"
 
@@ -20,15 +21,26 @@ type MyMessages struct {
 }
 
 type MyResponse struct{
-	Id       string     `json:"id"`
-	Balance  int        `json:"balanceTotal"`
+	Id       string     `json:"id,omitempty"`
+	Balance  int        `json:"balanceTotal,omitempty"`
 	Rate     float64    `json:"rate"`
 	RateAt   time.Time  `json:"rateAt"`
 	Messages MyMessages `json:"messages"`
 }
 
 func Me(c web.C, w http.ResponseWriter, r *http.Request) {
-	customer := c.Env["auth_customer"].(models.Customer)
+
+	t := r.Header.Get("Authorization")
+
+	parts := str.Split(t, ":")
+
+	var customer models.Customer
+	var customer_error error
+
+	if len(parts) >= 2 {
+		customer, customer_error = models.GetCustomerByToken(parts[1])
+	}
+
 
 	since, e := time.Parse(time.RFC3339, c.URLParams["since"])
 	if e != nil {
@@ -54,24 +66,29 @@ func Me(c web.C, w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	pm, err2 := models.GetDirectMessagesSince(customer, since)
-	if err2 != nil {
-		s.Log.Err(fmt.Sprintf("[error] GetPersonalMessagesSince: %s", err.Error()))
-	} else {
-		for _, c := range pm {
-			pers_messages = append(pers_messages, fmt.Sprintf("%s : %s", c.CreatedAt.Format(time.RFC3339), c.Message))
+	if customer_error == nil {
+		pm, err2 := models.GetDirectMessagesSince(customer, since)
+		if err2 != nil {
+			s.Log.Err(fmt.Sprintf("[error] GetPersonalMessagesSince: %s", err2.Error()))
+		} else {
+			for _, c := range pm {
+				pers_messages = append(pers_messages, fmt.Sprintf("%s : %s", c.CreatedAt.Format(time.RFC3339), c.Message))
+			}
 		}
 	}
 
 	resource := &MyResponse{
-		Id: customer.Id.Hex(),
-		Balance: customer.Balance,
 		Rate: rate.Rate,
 		RateAt: rate.CreatedAt,
 		Messages: MyMessages{
 			Multicast: glob_messages,
 			Personal:  pers_messages,
 		},
+	}
+
+	if customer_error == nil {
+		resource.Id = customer.Id.Hex()
+		resource.Balance = customer.Balance
 	}
 
 
