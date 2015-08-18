@@ -15,6 +15,7 @@ type Order struct {
     UpdatedAt time.Time      `json:"updatedAt,omitempty"  bson:"updatedAt,omitempty"`
     CustomerId bson.ObjectId `json:"customerId"           bson:"customerId,omitempty"`
     Status    string         `json:"status"               bson:"status"`
+    Uuid      int            `json:"uuid,omitempty"       bson:"uuid,omitempty"`
     RawData   interface{}    `json:"rawData"              bson:"rawData"`
 }
 
@@ -30,6 +31,7 @@ func (c *Order) Upsert() error {
         c.Id = bson.NewObjectId()
         c.CreatedAt = time.Now()
         c.UpdatedAt = c.CreatedAt
+        c.Uuid      = int(time.Now().Unix())
         c.Status    = "pending"
         err = coll.Insert(c)
     } else {

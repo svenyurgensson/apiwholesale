@@ -88,6 +88,7 @@ module Seed extend self
           updatedAt: Time.now - 8000,
           lastSeenAt: Time.now,
           description: "",
+          balanceTotal: rand(10000),
           rawData: {},
         },
         {
@@ -119,6 +120,7 @@ module Seed extend self
           updatedAt: Time.now - 3000,
           lastSeenAt: Time.now - 1000 ,
           description: "",
+          balanceTotal: rand(10000),
 
           rawData: {},
         },
