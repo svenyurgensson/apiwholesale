@@ -71,6 +71,17 @@ func OrderCreate(c web.C, w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    go func(){
+        endpoint := ""
+        if s.Env == s.Production {
+            endpoint = fmt.Sprintf("http://my.alibaba24.ru/clear-cache/%s", customer.Id.Hex())
+        } else {
+            endpoint = fmt.Sprintf("http://localhost:3000/clear-cache/%s", customer.Id.Hex())
+        }
+        http.Get(endpoint)
+    }()
+
+
     w.WriteHeader(http.StatusCreated)
 }
 

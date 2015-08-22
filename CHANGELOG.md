@@ -1,3 +1,8 @@
+1.02.0 2015-08-22
+=================
+* Go 1.5
+* Implement cleaning cache for customer on placing new order
+
 1.01.4 2015-08-18
 =================
 * Implement uuid for orders
