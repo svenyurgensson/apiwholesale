@@ -1,4 +1,4 @@
-1.02.0 2015-08-22
+1.2.0 2015-08-22
 =================
 * Go 1.5
 * Implement cleaning cache for customer on placing new order

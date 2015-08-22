@@ -16,7 +16,7 @@ import (
 )
 
 const Author = "Yury Batenko"
-const Version = "1.1.4 / 2015-08-18"
+const Version = "1.2.0 / 2015-08-22"
 const ApiVersion = "v1"
 const ConfigFile = "./config/settings.yml"
 
@@ -141,7 +141,7 @@ func db_establish_connection() {
     fmt.Printf("(re)connecting to database: %s\n", ConnURL)
 
     var err error
-    dbSession, err = mgo.Dial(ConnURL)
+    dbSession, err = mgo.DialWithTimeout(ConnURL, 3*time.Second)
     if err != nil {
         panic(err)
     }

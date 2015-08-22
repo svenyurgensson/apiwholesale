@@ -2,7 +2,7 @@ production:
   db:
     name: ali24_prod
     hosts:
-      - localhost:27017
+      - 127.0.0.1:27017
     options:
   admin_credentials: admin:lekdUkd_4UU2
 
@@ -10,7 +10,7 @@ development:
   db:
     name: ali24_dev
     hosts:
-      - localhost:27017
+      - 127.0.0.1:27017
     options:
   admin_credentials: admin:admin
 
@@ -18,6 +18,6 @@ test:
   db:
     name: ali24_test
     hosts:
-      - localhost:27017
+      - 127.0.0.1:27017
     options:
   admin_credentials: admin:admin
