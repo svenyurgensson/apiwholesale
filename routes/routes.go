@@ -4,7 +4,7 @@ import (
     "apiwholesale/controllers"
     "apiwholesale/system"
     "apiwholesale/middleware"
-    "net/http"
+    //"net/http"
     "github.com/zenazn/goji"
     "github.com/zenazn/goji/web"
   m "github.com/zenazn/goji/web/middleware"
@@ -33,28 +33,6 @@ func Include() {
     goji.Get("/favicon.ico", controllers.Favicon)
 
     goji.Get( base_url + "/me", controllers.Me)
-
-    admin := web.New()
-
-    goji.Handle(base_url + "/admin/*", admin)
-    goji.Get(base_url + "/admin", http.RedirectHandler(base_url + "/admin/", 301))
-    admin.Use(m.SubRouter)
-    admin.Use(middleware.SuperSecure)
-    admin.Use(c.Handler)
-
-    admin.Get(   "/customers",             controllers.AdminCustomersList)
-    admin.Post(  "/customers",             controllers.AdminCustomerCreate)
-    admin.Get(   "/customer/:customer_id", controllers.AdminCustomerView)
-    admin.Put(   "/customer/:customer_id", controllers.AdminCustomerUpdate)
-    admin.Delete("/customer/:customer_id", controllers.AdminCustomerDelete)
-
-    admin.Get(   "/orders",          controllers.AdminOrdersList)
-    admin.Get(   "/order/:order_id", controllers.AdminOrderView)
-    admin.Put(   "/order/:order_id", controllers.AdminOrderUpdate)
-    admin.Delete("/order/:order_id", controllers.AdminOrderDelete)
-
-    admin.Use(middleware.Static("public", middleware.StaticOptions{SkipLogging: true}))
-
 
     restricted := web.New()
     restricted.Use(c.Handler)

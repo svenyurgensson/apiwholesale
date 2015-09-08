@@ -61,7 +61,7 @@ namespace :build do
   desc "Copy project files into release"
   task :provision do
     mkdir "release", :noop => true
-    %w|doc db public config README.md CHANGELOG.md|.map do |f|
+    %w|doc db config README.md CHANGELOG.md|.map do |f|
       cp_r f, "release"
     end
   end

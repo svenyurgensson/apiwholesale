@@ -81,6 +81,7 @@ func OrderCreate(c web.C, w http.ResponseWriter, r *http.Request) {
         http.Get(endpoint)
     }()
 
+    models.OrderCreatedNotify(order)
 
     w.WriteHeader(http.StatusCreated)
 }

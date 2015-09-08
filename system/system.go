@@ -16,7 +16,7 @@ import (
 )
 
 const Author = "Yury Batenko"
-const Version = "1.2.0 / 2015-08-22"
+const Version = "1.2.1 / 2015-09-08"
 const ApiVersion = "v1"
 const ConfigFile = "./config/settings.yml"
 
@@ -41,8 +41,6 @@ var (
     ConnOptions   string
     dbSession     *mgo.Session
 
-
-    AdminCredentials string
 )
 
 
@@ -120,9 +118,6 @@ func load_parse_config() {
         ConnURL = ConnURL + "?" + ConnOptions
     }
 
-
-    AdminCredentials = ""
-    AdminCredentials, err = config.Get(Env + ".admin_credentials")
 
 }
 
