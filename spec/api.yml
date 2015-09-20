@@ -342,3 +342,21 @@ endpoints:
             Origin: http://foo.com
           expect:
             code: 403
+
+  search:
+    description: Base point for translation and search service
+    params:
+      q: russian string to be translated to chinese
+    methods:
+      post:
+        -
+          description: With given russian string, translate it to chinese and return back object
+          params:
+            q: конструктор лего звезда смерти
+          expect:
+            code: 200
+            body:
+              json:
+                queryRu: конструктор лего звезда смерти
+                resultZh: 樂高死星
+                source: bing
