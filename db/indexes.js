@@ -12,3 +12,7 @@ db.messages.createIndex({createdAt: 1, type: 1});
 db.messages.createIndex({createdAt: 1, type: 1, recipientId: 1});
 // will be removed in a 200 days
 //db.messages.createIndex( { "createdAt": 1 }, { expireAfterSeconds: (24 * 3600 * 200) });
+db.searchTranslations.createIndex(
+   { rus : "text" },
+   { default_language: "ru" }
+)

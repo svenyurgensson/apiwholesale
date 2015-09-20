@@ -28,7 +28,7 @@ func (c *Order) Upsert() error {
     var err error
 
     if ! c.Id.Valid() {
-        c.Id = bson.NewObjectId()
+        c.Id        = bson.NewObjectId()
         c.CreatedAt = time.Now()
         c.UpdatedAt = c.CreatedAt
         c.Uuid      = int(time.Now().Unix())

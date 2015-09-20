@@ -1,6 +1,11 @@
+1.3 2015-09-20
+=================
+* Add /search?q=... to return translated ru->zh
+* Searches saves to collection `searchTranslations`
+
 1.2.1 2015-09-08
 =================
-* Creation new order adds MoMq message
+* Creation new order adds `MoMq` message
 
 1.2.0 2015-08-22
 =================

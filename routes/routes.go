@@ -34,6 +34,8 @@ func Include() {
 
     goji.Get( base_url + "/me", controllers.Me)
 
+    goji.Post( base_url + "/search", controllers.Search)
+
     restricted := web.New()
     restricted.Use(c.Handler)
     restricted.Use(middleware.TokenAuth)

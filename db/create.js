@@ -9,6 +9,9 @@ db.createCollection("customers");
 print("Create 'customersBalance' collection");
 db.createCollection("customersBalance");
 
+print("Create 'searchTranslations' collection");
+db.createCollection("searchTranslations");
+
 print("Create 'currencyRates' collection");
 db.createCollection("currencyRates");
 
