@@ -7,9 +7,10 @@ import (
 
 type (
     SearchResponse struct {
-        QueryRu  string `json:"queryRu"`
-        ResultZh string `json:"resultZh"`
-        Source   string `json:"source"`
+        QueryRu     string `json:"queryRu"`
+        ResultZh    string `json:"resultZh"`
+        ResultZhGBK string `json:"resultZhGBK"`
+        Source      string `json:"source"`
     }
 
      SearchTranslation struct {

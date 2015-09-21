@@ -9,7 +9,10 @@ import (
     "io/ioutil"
     "fmt"
     "strings"
-    //"bytes"
+    "bytes"
+    "golang.org/x/text/encoding/simplifiedchinese"
+    "golang.org/x/text/transform"
+
     "errors"
     "apiwholesale/models"
 
@@ -152,10 +155,13 @@ func Search(c web.C, w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    gbk, _ := ioutil.ReadAll(transform.NewReader(bytes.NewReader([]byte(result)), simplifiedchinese.GBK.NewEncoder()))
+
     translated := models.SearchResponse{}
-    translated.QueryRu  = search
-    translated.ResultZh = result
-    translated.Source   = "bing"
+    translated.QueryRu      = search
+    translated.ResultZh     = result
+    translated.ResultZhGBK  = string(gbk)
+    translated.Source       = "bing"
 
     go func(){
         models.SearchInsert( translated )
