@@ -9,6 +9,8 @@ import (
     "io/ioutil"
     "fmt"
     "strings"
+    //"bytes"
+    "errors"
     "apiwholesale/models"
 
     "github.com/goji/param"
@@ -46,6 +48,12 @@ func getMSToken(force bool) error {
         }
 
         token := TokenResponse{}
+
+        // res, _ := ioutil.ReadAll(resp.Body)
+        // s.DEBUG( string(res) )
+        // r := bytes.NewReader(res)
+        // r.Seek(0, 0)
+
         if err = json.NewDecoder(resp.Body).Decode(&token); err != nil {
             return err
         }
@@ -64,7 +72,7 @@ func requestMSTranslate( search string ) (string, error) {
 
     data := url.Values{}
     data.Set("text", search)
-    data.Add("from", "ru")
+    // data.Add("from", "ru") // let's Bing detect our language
     data.Add("to", "zh-CHT")
 
     transUrl := "http://api.microsofttranslator.com/v2/Http.svc/Translate"
@@ -75,28 +83,30 @@ func requestMSTranslate( search string ) (string, error) {
     req.Header.Set("Authorization", "Bearer " + CurrentMSToken)
 
     result, err := client.Do(req)
+    defer result.Body.Close()
 
-    if err != nil {
-        if err = getMSToken(true); err != nil {
-            s.Log.Err(fmt.Sprintf("[error] MS token %s", err.Error()))
+    if err != nil || result.StatusCode != 200 {
+        // here we have to force request new token
+        if err := getMSToken(true); err != nil {
+            s.Log.Err( "[error] Token request failed" )
             return "", err
         }
 
-        // here we have new token
         req.Header.Set("Authorization", "Bearer " + CurrentMSToken)
         result, err = client.Do(req)
-        if err != nil {
-            s.Log.Err(fmt.Sprintf("[error] MS Translation limit %s", err.Error()))
-            return "", err
+
+        if err != nil || result.StatusCode != 200 {
+            s.Log.Err( "[error] MS Translation limit" )
+            return "", errors.New("MS Translation limit")
         }
     }
-
-    defer result.Body.Close()
 
     res, e := ioutil.ReadAll(result.Body)
     if e != nil {
         return "", e
     }
+
+    // s.DEBUG( string(res) )
 
     type Translated struct {
         Result string `xml:",chardata"`

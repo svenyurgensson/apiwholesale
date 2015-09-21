@@ -1,3 +1,7 @@
+1.3.4 2015-09-21
+=================
+* Fix require expired token
+
 1.3 2015-09-20
 =================
 * Add /search?q=... to return translated ru->zh
