@@ -10,15 +10,15 @@ import (
     "fmt"
     "strings"
     "bytes"
-    "golang.org/x/text/encoding/simplifiedchinese"
-    "golang.org/x/text/transform"
-
     "errors"
+
     "apiwholesale/models"
+    s "apiwholesale/system"
 
     "github.com/goji/param"
     "github.com/zenazn/goji/web"
-    s "apiwholesale/system"
+    "golang.org/x/text/encoding/simplifiedchinese"
+    "golang.org/x/text/transform"
 )
 
 type TokenResponse struct {
@@ -160,7 +160,7 @@ func Search(c web.C, w http.ResponseWriter, r *http.Request) {
     translated := models.SearchResponse{}
     translated.QueryRu      = search
     translated.ResultZh     = result
-    translated.ResultZhGBK  = string(gbk)
+    translated.ResultZhGBK  = url.QueryEscape(string(gbk))
     translated.Source       = "bing"
 
     go func(){
