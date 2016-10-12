@@ -1,22 +1,19 @@
 // mongo localhost:27017/ali24_prod db/create.js
 
 print("Create 'orders' collection");
-db.createCollection("orders");
+db.createCollection("raw_orders");
 
 print("Create 'customers' collection");
 db.createCollection("customers");
 
 print("Create 'customersBalance' collection");
-db.createCollection("customersBalance");
+db.createCollection("customers_balance");
 
 print("Create 'searchTranslations' collection");
-db.createCollection("searchTranslations");
+db.createCollection("search_translations");
 
 print("Create 'currencyRates' collection");
-db.createCollection("currencyRates");
+db.createCollection("currency_rates");
 
 print("Create 'messages' collection");
 db.createCollection("messages");
-
-print("Create 'mq_jobs' collection");
-db.createCollection("mq_jobs", {capped: true, size: 16384});

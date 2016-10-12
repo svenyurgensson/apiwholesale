@@ -1,18 +1,17 @@
 // mongo localhost:27017/ali24_prod db/indexes.js
 
 print("Add indexes to 'orders' collection");
-db.orders.createIndex({customerId: 1});
+db.orders.createIndex({customer_id: 1});
 
 print("Add indexes to 'currencyRates' collection");
-db.currencyRates.createIndex({createdAt: 1});
+db.currency_rates.createIndex({created_at: 1});
 
 print("Add indexes to 'messages' collection");
-db.messages.createIndex({createdAt: 1});
-db.messages.createIndex({createdAt: 1, type: 1});
-db.messages.createIndex({createdAt: 1, type: 1, recipientId: 1});
-// will be removed in a 200 days
-//db.messages.createIndex( { "createdAt": 1 }, { expireAfterSeconds: (24 * 3600 * 200) });
-db.searchTranslations.createIndex(
+db.messages.createIndex({created_at: 1});
+db.messages.createIndex({created_at: 1, type: 1});
+db.messages.createIndex({created_at: 1, type: 1, recipient_id: 1});
+
+db.search_translations.createIndex(
    { rus : "text" },
    { default_language: "ru" }
-)
+);
