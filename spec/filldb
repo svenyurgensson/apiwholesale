@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+require_relative 'seed'
+
+Seed.clear_all
+Seed.fill_docs

@@ -9,14 +9,14 @@ description: "Оптовые клиенты alibaba24.ru могут устано
 который позволяет откладывать нужные товары в корзину на alibaba24.ru путем внедрения
 дополнительных кнопок и элементов на страницы товаров taobao.com.
 API является веб-сервисом, который позволяет аутентифицировать клиента и сохранять заказы в базе данных"
-footer: (c) Yury Batenko for alibaba24.ru 2015
+footer: (c) Yury Batenko for alibaba24.ru 2015-17
 original:
   # what will be printed into  formatted output, your "real" API URL
   base_url: http://apiwholesale.alibaba24.ru
   port:
 
 # require arbitrary ruby file before starting tests
-require: ./spec/fixtures/seed.rb
+require: ./spec/seed.rb
 # in case if you has preloaded ruby file, here you can
 # call any ruby methods, say: Namespace::DB.clean() or smth
 # also you could run any shell commands: 'my_script.sh -v clear_db'
@@ -212,7 +212,6 @@ endpoints:
                 here: will be converted to json
           expect:
             code: 201
-
       options:
         -
           description: 200 OK on OPTIONS
@@ -356,7 +355,7 @@ endpoints:
           expect:
             code: 200
             body:
-              json:
-                queryRu: конструктор лего звезда смерти
-                resultZh: 樂高死星
-                source: bing
+              queryRu: конструктор лего звезда смерти
+              resultZh: 樂高死星
+              resultZhGBK: '%98%B7%B8%DF%CB%C0%D0%C7'
+              source: bing

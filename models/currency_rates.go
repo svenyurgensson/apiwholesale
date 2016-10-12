@@ -11,19 +11,20 @@ type (
 	 CurrencyRate struct {
 		 Id       bson.ObjectId `bson:"_id"`
 		 Rate       float64     `json:"rate"  bson:"rate"`
-		 CreatedAt  time.Time   `json:"createdAt,omitempty"  bson:"createdAt,omitempty"`
+		 CreatedAt  time.Time   `json:"createdAt,omitempty"  bson:"created_at,omitempty"`
 	 }
 )
 
 func GetLatestRate() (CurrencyRate, error) {
 	session := s.GetSession()
 	defer session.Close()
-	coll := session.DB(s.DB).C("currencyRates")
+	coll := session.DB(s.DB).C("currency_rates")
 
 	result := CurrencyRate{}
+
 	err := coll.Find(bson.M{}).
-		Sort("-createdAt").
-		Select(bson.M{"_id": 1, "rate": 1, "createdAt": 1}).
+		Sort("-created_at").
+		Select(bson.M{"_id": 1, "rate": 1, "created_at": 1}).
 		One(&result)
 
 	return result, err

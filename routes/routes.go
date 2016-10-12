@@ -4,7 +4,6 @@ import (
     "apiwholesale/controllers"
     "apiwholesale/system"
     "apiwholesale/middleware"
-    //"net/http"
     "github.com/zenazn/goji"
     "github.com/zenazn/goji/web"
   m "github.com/zenazn/goji/web/middleware"

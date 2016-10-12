@@ -18,15 +18,13 @@ type (
 		 Email    string        `json:"email"    bson:"email"`
 		 Password string        `json:"password" bson:"password"`
 		 Token    string        `json:"token"    bson:"token"`
-		 TokenTTL time.Time     `json:"tokenTTL" bson:"tokenTTL"`
+		 TokenTTL time.Time     `json:"tokenTTL" bson:"token_ttl"`
 
-		 CreatedAt  time.Time   `json:"createdAt,omitempty"  bson:"createdAt,omitempty"`
-		 UpdatedAt  time.Time   `json:"updatedAt,omitempty"  bson:"updatedAt,omitempty"`
-		 LastSeenAt time.Time   `json:"lastSeenAt,omitempty" bson:"lastSeenAt,omitempty"`
+		 CreatedAt  time.Time   `json:"createdAt,omitempty"  bson:"created_at,omitempty"`
+		 UpdatedAt  time.Time   `json:"updatedAt,omitempty"  bson:"updated_at,omitempty"`
+		 LastSeenAt time.Time   `json:"lastSeenAt,omitempty" bson:"last_seen_at,omitempty"`
 
-		 Balance int            `json:"balanceTotal,omitempty" bson:"balanceTotal,omitempty"`
-
-		 RawData   interface{}  `json:"rawData"  bson:"rawData"`
+		 Balance int            `json:"balanceTotal,omitempty" bson:"balance_total,omitempty"`
 	 }
 )
 
@@ -35,7 +33,7 @@ func (c *Customer) RenewLastSeen() {
 	defer session.Close()
 	coll := session.DB(s.DB).C("customers")
 
-	coll.Update(bson.M{"_id": c.Id}, bson.M{"$currentDate": bson.M{"lastSeenAt": true}})
+	coll.Update(bson.M{"_id": c.Id}, bson.M{"$currentDate": bson.M{"last_seen_at": true}})
 }
 
 func (c *Customer) RenewToken() string {

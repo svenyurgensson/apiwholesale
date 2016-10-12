@@ -16,17 +16,17 @@ type (
      SearchTranslation struct {
          Id       bson.ObjectId `bson:"_id"`
          Rus      string  `json:"rus"       bson:"rus"`
-         RusNorm  string  `json:"rusNorm"   bson:"rusNorm"`
-         TrBing   string  `json:"trBing"    bson:"trBing"`
-         TrGoogle string  `json:"trGoogle"  bson:"trGoogle"`
-         TrManual string  `json:"trManual"  bson:"trManual"`
+         RusNorm  string  `json:"rusNorm"   bson:"rus_norm"`
+         TrBing   string  `json:"trBing"    bson:"tr_bing"`
+         TrGoogle string  `json:"trGoogle"  bson:"tr_google"`
+         TrManual string  `json:"trManual"  bson:"tr_manual"`
      }
 )
 
 func SearchInsert( translate SearchResponse) error {
     session := s.GetSession()
     defer session.Close()
-    coll := session.DB(s.DB).C("searchTranslations")
+    coll := session.DB(s.DB).C("search_translations")
 
     search := &SearchTranslation{}
     search.Id  = bson.NewObjectId()

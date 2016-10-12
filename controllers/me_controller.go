@@ -41,7 +41,6 @@ func Me(c web.C, w http.ResponseWriter, r *http.Request) {
 		customer, customer_error = models.GetCustomerByToken(parts[1])
 	}
 
-
 	since, e := time.Parse(time.RFC3339, c.URLParams["since"])
 	if e != nil {
 		since = time.Now().AddDate(0, 0, -1)

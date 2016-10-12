@@ -12,11 +12,10 @@ import (
     "log/syslog"
 
     "gopkg.in/mgo.v2"
-    //"gopkg.in/mgo.v2/bson"
 )
 
 const Author = "Yury Batenko"
-const Version = "1.3.5 / 2015-09-22"
+const Version = "1.4.0 / 2016-10-12"
 const ApiVersion = "v1"
 const ConfigFile = "./config/settings.yml"
 

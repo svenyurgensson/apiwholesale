@@ -66,7 +66,6 @@ func SessionCreate(c web.C, w http.ResponseWriter, r *http.Request) {
 
 func SessionDelete(c web.C, w http.ResponseWriter, r *http.Request) {
     customer := c.Env["auth_customer"].(models.Customer)
-
     customer.Token = ""
     customer.TokenTTL = time.Now()
 
