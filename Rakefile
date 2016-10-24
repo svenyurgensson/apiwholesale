@@ -1,13 +1,5 @@
 #!/usr/bin/env ruby
 
-begin
-  gem "mongo"
-rescue Gem::LoadError
-  puts ".. installing mongo gem"
-  `gem i mongo`
-end
-
-
 task default: :test
 
 desc "Run disco API specs and docs generator"
@@ -18,6 +10,13 @@ end
 
 desc "Clean db and make seed of some data"
 task :seed do
+  begin
+    gem "mongo"
+  rescue Gem::LoadError
+    puts ".. installing mongo gem"
+    `gem i mongo`
+  end
+
   ENV["API_DB"]   = "ali24_dev" unless ENV["API_DB"]
   ENV["LOG_SEED"] = "yes"
   require_relative 'spec/fixtures/seed'
