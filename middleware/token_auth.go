@@ -5,6 +5,7 @@ import (
 	"errors"
 	str "strings"
 	"fmt"
+	"time"
 
 	"apiwholesale/models"
 
@@ -38,15 +39,17 @@ func TokenAuth(c *web.C, h http.Handler) http.Handler {
 			return
 		}
 
-		s.Log.Err(fmt.Sprintf("authorization failed: %v", r))
-
 		c.Env["auth_customer"] = customer
 
-		// session := s.GetSession()
-		// defer session.Close()
-		// coll := session.DB(s.DB).C("customers")
-		// c.Env["session"]    = session
-		// c.Env["collection"] = coll
+		var emptyTokenTTL  = customer.TokenTTL.IsZero()
+		var tokenRotten = !emptyTokenTTL && time.Now().After(customer.TokenTTL)
+
+		if emptyTokenTTL || tokenRotten {
+			new_token := customer.RenewToken()
+			w.Header().Set("X-Renew-Token", new_token)
+			s.Log.Info(fmt.Sprintf("[renewToken] client %X new token generated", customer.Id.Hex ))
+		}
+		w.Header().Set("X-Token-TTL", customer.TokenTTL.Format(time.RFC822))
 
 		// Update lastSeenAt field to current time
 		customer.RenewLastSeen()

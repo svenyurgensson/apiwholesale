@@ -18,7 +18,8 @@ type Credentials struct {
 }
 
 type TokenResource struct {
-    Token     string `json:"token"`
+    Token     string    `json:"token"`
+    TokenTTL  time.Time `json:"tokenTtl"`
 }
 
 
@@ -46,21 +47,21 @@ func SessionCreate(c web.C, w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    if customer.Token == "" || time.Now().After(customer.TokenTTL) {
-        customer.RenewToken()
+    var emptyToken  = customer.Token == ""
+    var emptyTokenTTL  = customer.TokenTTL.IsZero()
+    var tokenRotten = !emptyToken && !emptyTokenTTL && time.Now().After(customer.TokenTTL)
 
-        if _, err = customer.Upsert(); err != nil {
-            http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-            s.Log.Err(fmt.Sprintf("[error] session create: token update %s", err.Error()))
-            return
-        }
+    if emptyToken || tokenRotten {
+        new_token := customer.RenewToken()
+        if emptyToken { w.Header().Set("X-Renew-Token", new_token) }
+        s.Log.Info(fmt.Sprintf("[update] new client %X token generated", customer.Id.Hex ))
     }
-
+    w.Header().Set("X-Token-TTL", customer.TokenTTL.Format(time.RFC822))
     encoder := json.NewEncoder(w)
     w.Header().Set("Content-Type", "application/json")
     w.WriteHeader(http.StatusCreated)
 
-    encoder.Encode(TokenResource{customer.Token})
+    encoder.Encode(TokenResource{customer.Token, customer.TokenTTL})
 }
 
 

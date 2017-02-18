@@ -15,7 +15,7 @@ import (
 )
 
 const Author = "Yury Batenko"
-const Version = "1.4.0 / 2016-10-12"
+const Version = "1.6.0 / 2017-02-18"
 const ApiVersion = "v1"
 const ConfigFile = "./config/settings.yml"
 

@@ -12,10 +12,12 @@ import (
 type Stat struct {
     State           string `json:"state"`
     Version         string `json:"version"`
+    Env             string `json:"environment"`
     Hostname        string `json:"hostname"`
     RequestsTotal   int    `json:"requestsTotal"`
     RequestsFailed  int    `json:"requestsFailed"`
     BootTimestamp   string `json:"bootTimestamp"`
+    DBName          string `json:"dbName"`
     DBSocketsAlive  int `json:"dbSocketsAlive"`
     DBSocketsInUse  int `json:"dbSocketsInUse"`
     DBVersion       string `json:"mongoVersion"`
@@ -41,10 +43,12 @@ func Ping(c web.C, w http.ResponseWriter, r *http.Request) {
     stats := &Stat{
         State: state,
         Version: s.Version,
+        Env: s.Env,
         Hostname: s.Hostname,
         RequestsTotal: s.RequestsTotal,
         RequestsFailed: s.RequestsFailed,
         BootTimestamp: s.Boot_time,
+        DBName: s.DB,
         DBSocketsAlive: mstats.SocketsAlive,
         DBSocketsInUse: mstats.SocketsInUse,
         DBVersion: binfo.Version,

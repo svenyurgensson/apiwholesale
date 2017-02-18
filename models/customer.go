@@ -36,8 +36,12 @@ func (c *Customer) RenewLastSeen() {
 	coll.Update(bson.M{"_id": c.Id}, bson.M{"$currentDate": bson.M{"last_seen_at": true}})
 }
 
+// Генерирует новый токен для клиента и время жизни для него
+// сохраняет модель клиента
+// возвращает новый токен
 func (c *Customer) RenewToken() string {
 	uuid := make([]byte, 16)
+new_token:
 	n, err := io.ReadFull(rand.Reader, uuid)
 	if n != len(uuid) || err != nil {
 		panic(err)
@@ -50,9 +54,12 @@ func (c *Customer) RenewToken() string {
 
 	c.Token = uuid_string
 
-	// Set TTL Today + 3 month
-	var ttl time.Duration = time.Hour * 24 * 31 * 3
+	// Set TTL Today + 10 min
+	var ttl time.Duration = time.Minute * 10
 	c.TokenTTL = time.Now().Add(ttl)
+
+	_, err = c.Upsert()
+	if err != nil { goto new_token } // В случае если сгенерированный токен уже есть в коллекции
 
 	return uuid_string
 }
@@ -69,7 +76,9 @@ func (c *Customer) Validate() error {
 	return nil
 }
 
-
+// Сохраняем модель клиента в коллекции
+// если клиента еще не существует, создает нового
+//
 func (c *Customer) Upsert() (bson.ObjectId, error) {
 	session := s.GetSession()
 	defer session.Close()

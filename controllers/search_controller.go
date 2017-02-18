@@ -131,8 +131,19 @@ func Search(c web.C, w http.ResponseWriter, r *http.Request) {
         query SearchQuery
     )
 
+    if r.ContentLength < 1 {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        s.Log.Err(fmt.Sprintf("[error] empty query string"))
+        return
+    }
 
-    r.ParseForm()
+    err = r.ParseForm()
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        s.Log.Err(fmt.Sprintf("[error] empty query string"))
+        return
+    }
+
     err = param.Parse(r.Form, &query)
     if err != nil {
         http.Error(w, err.Error(), http.StatusBadRequest)
@@ -163,10 +174,7 @@ func Search(c web.C, w http.ResponseWriter, r *http.Request) {
     translated.ResultZhGBK  = url.QueryEscape(string(gbk))
     translated.Source       = "bing"
 
-    go func(){
-        models.SearchInsert( translated )
-    }()
-
+    models.SearchInsert( translated )
 
     encoder := json.NewEncoder(w)
     w.Header().Set("Content-Type", "application/json")
