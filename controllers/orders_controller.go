@@ -50,8 +50,6 @@ func OrderGet(c web.C, w http.ResponseWriter, r *http.Request) {
     encoder.Encode(resource)
 }
 
-
-
 func OrderCreate(c web.C, w http.ResponseWriter, r *http.Request) {
     customer := c.Env["auth_customer"].(models.Customer)
     var order models.Order
@@ -74,7 +72,7 @@ func OrderCreate(c web.C, w http.ResponseWriter, r *http.Request) {
     go func(){
         endpoint := ""
         if s.Env == s.Production {
-            endpoint = fmt.Sprintf("http://my.alibaba24.ru/clear-cache/%s", customer.Id.Hex())
+            endpoint = fmt.Sprintf("https://my.alibaba24.ru/clear-cache/%s", customer.Id.Hex())
         } else {
             endpoint = fmt.Sprintf("http://localhost:3000/clear-cache/%s", customer.Id.Hex())
         }
@@ -82,8 +80,9 @@ func OrderCreate(c web.C, w http.ResponseWriter, r *http.Request) {
     }()
 
     //models.OrderCreatedNotify(order)
-
+    w.Header().Set("Content-Type", "application/json")
     w.WriteHeader(http.StatusCreated)
+    fmt.Fprintf(w, "{}") // Empty json
 }
 
 func OrderDelete(c web.C, w http.ResponseWriter, r *http.Request) {
@@ -99,6 +98,7 @@ func OrderDelete(c web.C, w http.ResponseWriter, r *http.Request) {
     }
 
     w.WriteHeader(http.StatusNoContent)
+    fmt.Fprintf(w, "{}") // Empty json
 }
 
 func OrderUpdate(c web.C, w http.ResponseWriter, r *http.Request) {
@@ -142,4 +142,5 @@ func OrderUpdate(c web.C, w http.ResponseWriter, r *http.Request) {
     }
 
     w.WriteHeader(http.StatusOK)
+    fmt.Fprintf(w, "{}") // Empty json
 }
