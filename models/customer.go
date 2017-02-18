@@ -55,7 +55,7 @@ new_token:
 	c.Token = uuid_string
 
 	// Set TTL Today + 10 min
-	var ttl time.Duration = time.Minute * 10
+	var ttl time.Duration = time.Hour * 24 * 3
 	c.TokenTTL = time.Now().Add(ttl)
 
 	_, err = c.Upsert()
