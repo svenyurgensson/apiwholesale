@@ -32,7 +32,7 @@ var CurrentMSToken string
 
 func renewMSToken(force bool) error {
 	if len( CurrentMSToken ) == 0 || force == true {
-		tokenUrl := "https://api.cognitive.microsoft.com/sts/v1.0/issueToken?Subscription-Key=3c83adf1b1634652908eb29db3580d03"
+		tokenUrl := "https://api.cognitive.microsoft.com/sts/v1.0/issueToken?Subscription-Key=HIDDEN"
 
 		data := url.Values{}
 		resp, err := http.PostForm(tokenUrl, data)
